@@ -1,35 +1,28 @@
-// assets/dummyStyles.js
+
 export const doctorDetailStyles = {
-  // Layout styles
   pageContainer: "min-h- font-serif bg-linear-to-br from-emerald-50 via-white to-green-50 p-4 sm:p-6",
   maxWidthContainer: "max-w-4xl mx-auto",
   maxWidthContainerLg: "max-w-6xl mx-auto",
   maxWidthContainerXL: "max-w-9xl",
   
-  // Header styles
   headerContainer: "text-center mb-12",
   headerFlexContainer: "flex flex-col sm:flex-row justify-center items-center gap-3 mb-4",
   headerIconContainer: "p-3 bg-emerald-500 rounded-full shadow-lg",
   headerTitle: "text-3xl sm:text-4xl md:text-5xl font-bold bg-linear-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mt-2 sm:mt-0",
   
-  // Form styles
   formContainer: "bg-white/80 backdrop-blur-sm border border-emerald-100 shadow-2xl p-6 sm:p-8 rounded-3xl mb-16",
   formGrid: "grid grid-cols-1 md:grid-cols-2 gap-6",
   
-  // Input styles
   inputBase: "p-3 rounded-full border-2 border-emerald-100 bg-white placeholder:text-gray-400 shadow-sm w-full focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all",
   textareaBase: "p-3 rounded-xl border-2 border-emerald-100 bg-white placeholder:text-gray-400 shadow-sm w-full focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all",
   inputWithIcon: "pr-12",
   
-  // File upload styles
   fileInput: "w-40 md:w-[180px] border-2 border-emerald-100 rounded-full p-2 text-sm bg-white focus:border-emerald-400 transition",
   imagePreview: "h-12 w-12 md:h-16 md:w-16 rounded-full shadow-md border-2 border-emerald-200 object-cover",
   removeImageButton: "absolute -top-2 -right-1.5 bg-rose-500 text-white rounded-full p-1 transition",
   
-  // Password field styles
   passwordToggleButton: "absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full",
   
-  // Schedule section styles
   scheduleContainer: "p-6 bg-emerald-50 rounded-2xl border border-emerald-100",
   scheduleHeader: "flex items-center gap-3 mb-4",
   scheduleTitle: "text-lg font-semibold text-emerald-800",
@@ -40,18 +33,15 @@ export const doctorDetailStyles = {
   slotsGrid: "mt-4 space-y-2 max-w-9xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 lg:grid-cols-3 gap-4",
   slotItem: "flex justify-between items-center bg-emerald-50 p-3 rounded-xl border border-emerald-100 shadow-sm hover:shadow-md text-emerald-800",
   
-  // Submit button styles
   submitButtonContainer: "md:col-span-2 flex justify-center mt-6",
   submitButton: "px-8 py-4 rounded-full font-semibold shadow-xl w-full md:w-auto",
   submitButtonEnabled: "bg-linear-to-r from-emerald-500 to-cyan-500 text-white",
   submitButtonDisabled: "opacity-60 cursor-not-allowed",
   
-  // Toast styles
   toastContainer: "fixed top-6 right-3 left-3 sm:right-6 sm:left-auto p-4 rounded-xl shadow-xl flex items-center gap-3",
   toastSuccess: "bg-emerald-50 border border-emerald-200 text-emerald-700",
   toastError: "bg-rose-50 border border-rose-200 text-rose-700",
   
-  // Doctor list styles
   doctorListContainer: "max-w-4xl mx-auto mt-8",
   doctorListGrid: "grid grid-cols-1 md:grid-cols-2 gap-4",
   doctorCard: "p-4 rounded-xl border bg-white/80 shadow",
@@ -60,16 +50,12 @@ export const doctorDetailStyles = {
   doctorName: "font-semibold",
   doctorSpecialization: "text-sm text-gray-500",
   
-  // Labels and text
   label: "block text-sm font-medium text-gray-700 mb-2",
   emptyState: "text-center text-gray-500",
   
-  // Cursor utilities
   cursorPointer: "cursor-pointer",
   cursorNotAllowed: "cursor-not-allowed",
 };
-
-// assets/dummyStyles.js
 
 export const pageStyles = {
   container: "min-h-screen font-serif bg-emerald-50 p-3 sm:p-4 md:p-6 lg:p-8",
@@ -145,18 +131,14 @@ export const keyframesStyles = `
   }
 `;
 
-// Add to the existing dummyStyles.js file
 export const dashboardStyles = {
-  // Layout styles
   pageContainer: "min-h-screen font-serif p-4 sm:p-6 bg-linear-to-br from-green-50 via-green-100 to-white",
   maxWidthContainer: "max-w-7xl mx-auto",
   
-  // Header styles
   headerContainer: "flex items-center justify-between mb-6",
   headerTitle: "text-2xl md:text-3xl font-bold text-gray-800",
   headerSubtitle: "text-sm text-slate-600 mt-1",
   
-  // Stats section styles
   statsGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-6",
   statCard: "p-4 rounded-full bg-linear-to-br from-emerald-100 to-emerald-50 shadow-sm border border-green-100",
   statCardContent: "flex items-center gap-3",
@@ -164,7 +146,6 @@ export const dashboardStyles = {
   statLabel: "text-sm text-slate-600",
   statValue: "text-xl font-semibold text-slate-800",
   
-  // Search section styles
   searchLabel: "block text-lg text-slate-600 mb-2",
   searchContainer: "flex items-center gap-3 max-w-md",
   searchInputContainer: "relative flex-1",
@@ -172,7 +153,6 @@ export const dashboardStyles = {
   searchIcon: "absolute left-3 top-2.5 w-5 h-5 text-green-500",
   clearButton: "px-3 py-2 bg-green-500 text-white rounded-full shadow hover:bg-green-600",
   
-  // Doctors table styles
   tableContainer: "bg-white rounded-2xl shadow overflow-hidden",
   tableHeader: "px-6 py-4 border-b border-green-50 flex items-center justify-between",
   tableTitle: "text-lg font-semibold text-slate-800",
@@ -199,7 +179,6 @@ export const dashboardStyles = {
   canceledText: "text-sm text-center text-rose-500",
   earningsText: "text-sm text-right font-semibold text-slate-800",
   
-  // Mobile view styles
   mobileDoctorContainer: "md:hidden px-4 py-4",
   mobileDoctorGrid: "space-y-3",
   mobileDoctorCard: "bg-white rounded-xl shadow p-3 border border-green-50",
@@ -213,15 +192,12 @@ export const dashboardStyles = {
   mobileStatValue: "text-sm font-semibold text-slate-800",
   mobileEarningsContainer: "mt-3 flex items-center justify-between text-sm text-slate-700",
   
-  // Show more button styles
   showMoreContainer: "px-6 py-4 border-t border-green-50 flex justify-center",
   showMoreButton: "px-4 py-2 rounded-full bg-white border border-green-200 shadow-sm hover:bg-green-50 transition",
   
-  // Cursor utilities
   cursorPointer: "cursor-pointer",
   cursorNotAllowed: "cursor-not-allowed",
   
-  // Text colors (for reuse)
   textSlate600: "text-slate-600",
   textSlate700: "text-slate-700",
   textSlate800: "text-slate-800",
@@ -230,21 +206,18 @@ export const dashboardStyles = {
   textRose600: "text-rose-600",
 };
 
-// assets/dummyStyles.js
+
 export const addServiceStyles = {
-  // Container styles
   container: {
     main: "min-h-screen font-serif bg-linear-to-br from-emerald-50 via-emerald-100 to-teal-50 relative flex items-center justify-center p-4 sm:p-6 overflow-x-hidden",
     form: "w-full max-w-5xl bg-white/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-100/50 box-border"
   },
 
-  // Header styles
   header: {
     title: "text-2xl sm:text-3xl font-extrabold text-transparent bg-linear-to-r from-emerald-700 to-teal-600 bg-clip-text",
     subtitle: "text-sm text-gray-500 mt-1"
   },
 
-  // Button styles
   buttons: {
     reset: "w-full sm:w-auto px-4 py-2 cursor-pointer rounded-full bg-white border border-emerald-100 hover:shadow transition-shadow duration-200",
     submit: "inline-flex justify-center items-center gap-2 w-full sm:w-auto px-5 py-2 rounded-full bg-linear-to-r from-emerald-500 to-teal-500 text-white font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-60",
@@ -256,7 +229,6 @@ export const addServiceStyles = {
     toastClose: "p-1 rounded-full hover:bg-white/50 transition-colors"
   },
 
-  // Image upload styles
   imageUpload: {
     container: (hasError) => 
       `w-full rounded-2xl p-4 ${
