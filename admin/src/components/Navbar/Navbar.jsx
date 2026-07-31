@@ -183,7 +183,7 @@ export default function AnimatedNavbar() {
                 MediCare
               </div>
               <div className={ns.logoSubtext}>
-                Healthcare Solutions
+                 Modern Healthcare for Everyone
               </div>
             </Link>
           </div>
