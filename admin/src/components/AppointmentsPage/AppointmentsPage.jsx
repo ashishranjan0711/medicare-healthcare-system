@@ -3,14 +3,9 @@ import React, { useMemo, useState, useEffect } from "react";
 import { Search, Calendar, BadgeIndianRupee } from "lucide-react";
 import { pageStyles, statusClasses, keyframesStyles } from "../../assets/dummyStyles";
 
-/* ----------------------
-  Config
------------------------- */
 const API_BASE = "https://medicare-healthcare-system-bcked.onrender.com";
 
-/* ----------------------
-  Helpers
------------------------- */
+
 function formatDateISO(iso) {
   try {
     const d = new Date(iso + "T00:00:00");
@@ -40,11 +35,8 @@ function dateTimeFromSlot(slot) {
   }
 }
 
-/* ----------------------
-  Component
------------------------- */
+
 export default function AppointmentsPage() {
-  // toggle this to true if current user is major admin — keeps same behavior as your backend logic
   const isAdmin = true;
 
   const [appointments, setAppointments] = useState([]);
@@ -56,7 +48,6 @@ export default function AppointmentsPage() {
   const [filterSpeciality, setFilterSpeciality] = useState("all");
   const [showAll, setShowAll] = useState(false);
 
-  // fetch list from server
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -95,7 +86,7 @@ export default function AppointmentsPage() {
               time: a.time || (a.slot && a.slot.time) || "00:00 AM",
             },
             status: a.status || (a.payment && a.payment.status) || "Pending",
-            raw: a, // keep original in case we need it
+            raw: a,
           };
         });
         setAppointments(items);
@@ -107,16 +98,14 @@ export default function AppointmentsPage() {
       }
     }
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // load once on mount
+    
+  }, []); 
 
-  // compute available specialities from fetched appointments
   const specialities = useMemo(() => {
     const set = new Set(appointments.map((a) => a.speciality || "General"));
     return ["all", ...Array.from(set)];
   }, [appointments]);
 
-  // client-side filtering (speciality & date & query)
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return appointments.filter((a) => {
@@ -136,7 +125,6 @@ export default function AppointmentsPage() {
     });
   }, [appointments, query, filterDate, filterSpeciality]);
 
-  // sort filtered by datetime descending
   const sortedFiltered = useMemo(() => {
     return filtered.slice().sort((a, b) => {
       const da = dateTimeFromSlot(a.slot).getTime();
@@ -150,7 +138,6 @@ export default function AppointmentsPage() {
     [sortedFiltered, showAll]
   );
 
-  // Admin cancel (calls backend POST /api/appointments/:id/cancel)
   async function adminCancelAppointment(id) {
     const appt = appointments.find((x) => x.id === id);
     if (!appt) return;
@@ -160,7 +147,6 @@ export default function AppointmentsPage() {
       statusLower === "canceled" || statusLower === "cancelled";
     const isCompleted = statusLower === "completed";
 
-    // don't allow cancel if already cancelled OR completed
     if (isCancelled || isCompleted) return;
 
     const ok = window.confirm(
@@ -171,7 +157,7 @@ export default function AppointmentsPage() {
     if (!ok) return;
 
     try {
-      // Optimistic UI update
+      
       setAppointments((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: "Canceled" } : p))
       );
@@ -188,7 +174,7 @@ export default function AppointmentsPage() {
       const data = await res.json();
       const updated = data?.appointment || data?.appointments || null;
       if (updated) {
-        // update local state with authoritative status
+        
         setAppointments((prev) =>
           prev.map((p) =>
             p.id === id
@@ -208,7 +194,7 @@ export default function AppointmentsPage() {
     } catch (err) {
       console.error("Cancel error:", err);
       setError(err.message || "Failed to cancel appointment");
-      // revert optimistic update (simple approach: reload)
+      
       try {
         const reload = await fetch(`${API_BASE}/api/appointments?limit=200`);
         if (reload.ok) {
@@ -236,7 +222,7 @@ export default function AppointmentsPage() {
           setAppointments(items);
         }
       } catch (e) {
-        // ignore reload error
+        
       }
     }
   }
