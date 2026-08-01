@@ -20,7 +20,6 @@ function timeStringToMinutes(t) {
   return h * 60 + m;
 }
 
-// format an ISO date (YYYY-MM-DD) to "D Mon YYYY" (e.g. "3 Dec 2025")
 function formatDateISO(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-");
@@ -80,11 +79,11 @@ export default function DoctorDetailPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // compute today's date in local timezone as YYYY-MM-DD (used for min on date input)
+
   const [today] = useState(() => {
     const d = new Date();
-    // convert to local midnight and then to ISO date part
-    const tzOffset = d.getTimezoneOffset(); // minutes
+
+    const tzOffset = d.getTimezoneOffset(); 
     const local = new Date(d.getTime() - tzOffset * 60000);
     return local.toISOString().split("T")[0];
   });
@@ -100,7 +99,7 @@ export default function DoctorDetailPage() {
   function handleImage(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    // revoke previous preview if it exists
+    
     if (form.imagePreview && form.imageFile) {
       try {
         URL.revokeObjectURL(form.imagePreview);
@@ -115,7 +114,7 @@ export default function DoctorDetailPage() {
   }
 
   function removeImage() {
-    // revoke object URL if we created one
+    
     if (form.imagePreview && form.imageFile) {
       try {
         URL.revokeObjectURL(form.imagePreview);
@@ -137,7 +136,7 @@ export default function DoctorDetailPage() {
       return;
     }
 
-    // Prevent past dates
+   
     if (slotDate < today) {
       showToast("error", "Cannot add a slot in the past");
       return;
@@ -145,7 +144,6 @@ export default function DoctorDetailPage() {
 
     const time = `${slotHour}:${slotMinute} ${slotAmpm}`;
 
-    // If date is today, prevent times in the past
     if (slotDate === today) {
       const now = new Date();
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -336,13 +334,13 @@ export default function DoctorDetailPage() {
         </div>
       </div>
 
-      {/* FORM */}
+     
       <div className={s.maxWidthContainer + " " + s.formContainer}>
         <form
           onSubmit={handleAdd}
           className={s.formGrid}
         >
-          {/* IMAGE UPLOAD */}
+          
           <div className="md:col-span-2">
             <label className={s.label}>
               Upload Profile Image
@@ -435,7 +433,6 @@ export default function DoctorDetailPage() {
             onChange={(e) => {
               const v = e.target.value;
 
-              // allow clearing
               if (v === "") {
                 setForm((p) => ({ ...p, rating: "" }));
                 return;
@@ -444,16 +441,15 @@ export default function DoctorDetailPage() {
               const n = Number(v);
               if (Number.isNaN(n)) return;
 
-              // clamp between 1 and 5
               const clamped = Math.max(1, Math.min(5, n));
 
-              // keep only 1 decimal place
+             
               const fixed = Math.round(clamped * 10) / 10;
 
               setForm((p) => ({ ...p, rating: fixed.toString() }));
             }}
             onBlur={() => {
-              // force 1 decimal place on blur
+              
               setForm((p) => {
                 if (!p.rating) return p;
                 const n = Number(p.rating);
