@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import logoImg from "../../assets/logo.png";
 
-// Clerk hooks
 import { useClerk, useAuth, useUser } from "@clerk/clerk-react";
 import { navbarStyles as ns } from "../../assets/dummyStyles";
 
@@ -30,12 +29,10 @@ export default function AnimatedNavbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Clerk
   const clerk = useClerk?.();
   const { getToken, isLoaded: authLoaded } = useAuth();
   const { isSignedIn, user, isLoaded: userLoaded } = useUser();
 
-  /* ---------------- Sliding Active Indicator ---------------- */
   const moveIndicator = useCallback(() => {
     const container = navInnerRef.current;
     const ind = indicatorRef.current;
@@ -92,7 +89,6 @@ export default function AnimatedNavbar() {
     };
   }, [moveIndicator]);
 
-  // Close mobile menu on Escape
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape" && open) setOpen(false);
@@ -101,17 +97,16 @@ export default function AnimatedNavbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // When user signs in, fetch a token and store it in localStorage
   useEffect(() => {
     let mounted = true;
     const storeToken = async () => {
       if (!authLoaded || !userLoaded) return;
       if (!isSignedIn) {
-        // clear token on signed out
+        
         try {
           localStorage.removeItem("clerk_token");
         } catch (e) {
-          /* ignore */
+          
         }
         return;
       }
@@ -160,9 +155,9 @@ export default function AnimatedNavbar() {
       try {
         localStorage.removeItem("clerk_token");
       } catch (e) {
-        /* ignore */
+        
       }
-      // redirect to home after sign out
+      
       navigate("/");
     }
   };
@@ -171,7 +166,7 @@ export default function AnimatedNavbar() {
     <header className={ns.header}>
       <nav className={ns.navContainer}>
         <div className={ns.flexContainer}>
-          {/* LEFT */}
+          
           <div className={ns.logoContainer}>
             <img
               src={logoImg}
@@ -188,7 +183,6 @@ export default function AnimatedNavbar() {
             </Link>
           </div>
 
-          {/* CENTER NAV */}
           <div className={ns.centerNavContainer}>
             <div className={ns.glowEffect}>
               <div className={ns.centerNavInner}>
@@ -243,9 +237,7 @@ export default function AnimatedNavbar() {
             </div>
           </div>
 
-          {/* RIGHT */}
           <div className={ns.rightContainer}>
-            {/* Auth buttons */}
             {isSignedIn ? (
               <button
                 onClick={handleSignOut}
@@ -264,7 +256,6 @@ export default function AnimatedNavbar() {
               </div>
             )}
 
-            {/* MOBILE MENU ICON */}
             <button
               className={ns.mobileMenuButton}
               onClick={() => setOpen((v) => !v)}
@@ -276,7 +267,6 @@ export default function AnimatedNavbar() {
           </div>
         </div>
 
-        {/* When mobile menu is open, render an overlay that closes the menu when clicked. */}
         {open && (
           <div
             className={ns.mobileOverlay}
@@ -284,7 +274,6 @@ export default function AnimatedNavbar() {
           />
         )}
 
-        {/* MOBILE MENU */}
         {open && (
           <div className={ns.mobileMenuContainer} id="mobile-menu">
             <div className={ns.mobileMenuInner}>
@@ -372,7 +361,6 @@ export default function AnimatedNavbar() {
   );
 }
 
-/* ---------- Helper Components ---------- */
 
 function CenterNavItem({ to, icon, label }) {
   return (
