@@ -52,7 +52,6 @@ export default function ListServicePage({ apiBase }) {
     "Dec",
   ];
 
-  // Today's date in local timezone as YYYY-MM-DD (for date min)
   const todayISO = (() => {
     const d = new Date();
     const yyyy = d.getFullYear();
@@ -61,7 +60,6 @@ export default function ListServicePage({ apiBase }) {
     return `${yyyy}-${mm}-${dd}`;
   })();
 
-  // ---------- ADDED: sortSlotsForDisplay ----------
 function sortSlotsForDisplay(slots = []) {
   if (!Array.isArray(slots)) return [];
 
@@ -84,7 +82,6 @@ function sortSlotsForDisplay(slots = []) {
     return Date.UTC(y, m, d);
   };
 
-  // clone so we don't mutate original
   const arr = slots.slice();
 
   arr.sort((a, b) => {
@@ -94,20 +91,16 @@ function sortSlotsForDisplay(slots = []) {
     const aIsPast = aDateVal < todayVal;
     const bIsPast = bDateVal < todayVal;
 
-    // Past dates come first
     if (aIsPast !== bIsPast) return aIsPast ? -1 : 1;
 
-    // If both past: nearest past date first (descending date)
     if (aIsPast && bIsPast && aDateVal !== bDateVal) {
       return bDateVal - aDateVal;
     }
 
-    // If both today/future: earliest date first (ascending)
     if (!aIsPast && !bIsPast && aDateVal !== bDateVal) {
       return aDateVal - bDateVal;
     }
 
-    // Same date (or date missing) -> sort by time-of-day ascending
     const aTs = slotDateTimeToMs(a) || Number.POSITIVE_INFINITY;
     const bTs = slotDateTimeToMs(b) || Number.POSITIVE_INFINITY;
     return aTs - bTs;
@@ -115,10 +108,7 @@ function sortSlotsForDisplay(slots = []) {
 
   return arr;
 }
-// ---------- END ADDED ----------
 
-
-  // Load services from backend
   async function fetchServices() {
     try {
       const res = await fetch(`${API_BASE}/api/services`);
@@ -129,9 +119,9 @@ function sortSlotsForDisplay(slots = []) {
         setServices([]);
         return;
       }
-      // support both { success:true, data: [...] } and older shape
+     
       const items = (body && (body.data || body.services || body.items)) || [];
-      // normalize id field for UI
+      
       const normalized = items.map((s) => ({
         id: s._id || s.id,
         name: s.name,
@@ -143,14 +133,13 @@ function sortSlotsForDisplay(slots = []) {
         price: s.price ?? s.fee ?? 0,
         available: s.available ?? s.availability === "Available",
         image: s.image || s.imageUrl || s.imageSrc || s.imageSmall || "",
-        // slots: if stored as strings -> convert to array of slot objects for display,
-        // if stored as map/object -> convert using convertSlotsMapToArray
+      
         slots: Array.isArray(s.slots)
           ? convertSlotsForUI(s.slots)
           : s.slots && typeof s.slots === "object"
           ? convertSlotsMapToArray(s.slots)
           : [],
-        // keep original raw for potential debug
+      
         _raw: s,
       }));
       setServices(normalized);
@@ -163,15 +152,11 @@ function sortSlotsForDisplay(slots = []) {
 
   useEffect(() => {
     fetchServices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Convert array of formatted slot-strings into UI-friendly slot objects
-  // Convert array of slot-strings (various possible formats) into UI-friendly slot objects
   function convertSlotsForUI(slotStrings = []) {
     return (slotStrings || []).map((s, idx) => {
       const raw = String(s || "");
-      // 1) Match your existing "DD Mon YYYY • HH:MM AM" pattern first
       const m = raw.match(
         /^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s*•\s*(\d{1,2}):(\d{2})\s*(AM|PM)?/i
       );
@@ -190,17 +175,15 @@ function sortSlotsForDisplay(slots = []) {
         return { id: `s-${idx}`, date, hour, minute, ampm, raw };
       }
 
-      // 2) ISO datetime like "2026-01-06T10:00:00.000Z" or "2026-01-06T10:00:00"
       const isoMatch = raw.match(
         /^(\d{4}-\d{2}-\d{2})(?:[T\s](\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?(?:Z|[+\-]\d{2}:\d{2})?)?/
       );
       if (isoMatch) {
-        const datePart = isoMatch[1]; // YYYY-MM-DD (use as-is to avoid TZ shifts)
+        const datePart = isoMatch[1]; 
         let hour = "10";
         let minute = "00";
         let ampm = "AM";
         if (isoMatch[2]) {
-          // convert 24h to 12h for UI display (use local conversion for time if desired)
           const hh = Number(isoMatch[2]);
           const mm = String(Number(isoMatch[3] || "0")).padStart(2, "0");
           minute = mm;
@@ -221,7 +204,6 @@ function sortSlotsForDisplay(slots = []) {
         return { id: `s-${idx}`, date: datePart, hour, minute, ampm, raw };
       }
 
-      // 3) Fallback: if string looks like "HH:MM AM" only, keep date empty
       const timeOnly = raw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
       if (timeOnly) {
         const hour = String(Number(timeOnly[1]));
@@ -237,7 +219,6 @@ function sortSlotsForDisplay(slots = []) {
         };
       }
 
-      // 4) last fallback: keep raw and empty date so UI won't mis-display
       return {
         id: `s-${idx}`,
         date: "",
@@ -249,7 +230,6 @@ function sortSlotsForDisplay(slots = []) {
     });
   }
 
-  // Helper: convert Map-like slots (object or Map) to array-of-slot-objects
   function convertSlotsMapToArray(slotsMap) {
     try {
       const out = [];
@@ -274,7 +254,6 @@ function sortSlotsForDisplay(slots = []) {
     }
   }
 
-  // parse strings like "DD Mon YYYY • HH:MM AM" or "HH:MM AM" or ISO time parts — best-effort
   function parseFrontendSlotString(date, timeStr) {
     const slot = {
       date: date || "",
@@ -287,7 +266,6 @@ function sortSlotsForDisplay(slots = []) {
     if (!timeStr) return slot;
     const raw = String(timeStr);
 
-    // If timeStr is an ISO full datetime, extract time portion
     const isoMatch = raw.match(
       /[T\s](\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?(?:Z|[+\-]\d{2}:\d{2})?$/
     );
@@ -311,7 +289,6 @@ function sortSlotsForDisplay(slots = []) {
       return slot;
     }
 
-    // fallback: "HH:MM AM/PM"
     const m = raw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
     if (m) {
       slot.hour = String(Number(m[1]));
@@ -321,25 +298,22 @@ function sortSlotsForDisplay(slots = []) {
     return slot;
   }
 
-  // Toggle details (only one open at a time)
   function toggleDetails(id) {
     setOpenDetails((prev) => ({ [id]: !prev[id] }));
   }
 
-  // Start editing: fetch fresh service data (optional) and open form
   async function startEdit(service) {
-    // try to fetch the latest single service from backend if available
+    
     let latest = service;
     if (service.id) {
       try {
         const res = await fetch(`${API_BASE}/api/services/${service.id}`);
         const body = await res.json().catch(() => null);
         if (res.ok && body) {
-          // body might be { success:true, data: service }
           latest = body.data || body.service || body;
         }
       } catch (e) {
-        // ignore and use provided object
+
       }
     }
 
@@ -347,7 +321,6 @@ function sortSlotsForDisplay(slots = []) {
       id: latest._id || latest.id,
       name: latest.name || "",
       about: latest.about || "",
-      // instructions (one per line)
       instructionsText: (
         latest.instructions ||
         latest.preInstructions ||
@@ -356,10 +329,8 @@ function sortSlotsForDisplay(slots = []) {
       price: latest.price ?? latest.fee ?? 0,
       available:
         latest.available ?? latest.availability === "Available" ?? true,
-      // show remote image URL as preview if present
       imagePreview: latest.imageUrl || latest.image || latest.imageSrc || "",
-      imageFile: null, // file chosen by user when changing
-      // UI-friendly slots (array of objects with date/hour/minute/ampm)
+      imageFile: null, 
       slots: sortSlotsForDisplay(
         Array.isArray(latest.slots)
           ? convertSlotsForUI(latest.slots)
@@ -377,7 +348,6 @@ function sortSlotsForDisplay(slots = []) {
     setEditForm(null);
   }
 
-  // Validate slots: same rules you provided + no past date/time
   function validateSlots(slots = []) {
     for (let i = 0; i < slots.length; i++) {
       const slot = slots[i];
@@ -420,7 +390,6 @@ function sortSlotsForDisplay(slots = []) {
         };
       }
 
-      // block past date/time
       const slotTs = slotDateTimeToMs(slot);
       if (slotTs <= Date.now()) {
         return {
@@ -433,7 +402,6 @@ function sortSlotsForDisplay(slots = []) {
     return { valid: true };
   }
 
-  // Duplicate check
   function findDuplicateInSlots(slots = []) {
     const seen = new Set();
     for (let s of slots) {
@@ -446,13 +414,11 @@ function sortSlotsForDisplay(slots = []) {
     return null;
   }
 
-  // Format slots for backend: array of formatted strings like "DD Mon YYYY • HH:MM AM"
   function slotsToFormattedStrings(slots = []) {
     return (slots || []).map((s) => {
       if (typeof s === "string") return s;
       if (s.raw && typeof s.raw === "string" && s.raw.includes("•"))
         return s.raw;
-      // build formatted string from date/hour/minute/ampm
       const parts = (s.date || "").split("-");
       const year = parts[0] || "";
       const monthNum = Number(parts[1] || "1");
@@ -462,16 +428,13 @@ function sortSlotsForDisplay(slots = []) {
       const minute = String(s.minute || "00").padStart(2, "0");
       const ampm = (s.ampm || "AM").toUpperCase();
       if (!day || !year) {
-        // fallback: use time-only or raw
         return s.raw || `${hour}:${minute} ${ampm}`;
       }
       return `${day} ${monthName} ${year} • ${hour}:${minute} ${ampm}`;
     });
   }
 
-  // Convert slot object to timestamp in ms (local timezone)
   function slotDateTimeToMs(slot) {
-    // slot.date is YYYY-MM-DD
     const [y, m, d] = (slot.date || "").split("-");
     if (!y || !m || !d) return 0;
     let h = Number(slot.hour || 0);
@@ -482,15 +445,12 @@ function sortSlotsForDisplay(slots = []) {
     } else {
       if (h !== 12) h = h + 12;
     }
-    // month index is 0-based in Date
     return new Date(Number(y), Number(m) - 1, Number(d), h, mm, 0, 0).getTime();
   }
 
-  // Save edit -> send PUT /api/services/:id (multipart)
   async function saveEdit() {
     if (!editForm) return;
 
-    // validation (includes past-date/time check)
     if ((editForm.slots || []).length > 0) {
       const validation = validateSlots(editForm.slots || []);
       if (!validation.valid) {
@@ -518,20 +478,17 @@ function sortSlotsForDisplay(slots = []) {
       fd.append("name", editForm.name || "");
       fd.append("about", editForm.about || "");
       fd.append("price", String(Number(editForm.price || 0)));
-      // send availability as string to be parsed by backend ("available" / "unavailable")
       fd.append(
         "availability",
         editForm.available ? "available" : "unavailable"
       );
 
-      // instructions: convert multi-line text to array
       const instructions = (editForm.instructionsText || "")
         .split(/\r?\n/)
         .map((s) => s.trim())
         .filter(Boolean);
       fd.append("instructions", JSON.stringify(instructions));
 
-      // slots: convert to formatted strings (the AddService format)
       const slotsFormatted = slotsToFormattedStrings(editForm.slots || []);
       fd.append("slots", JSON.stringify(slotsFormatted));
 
@@ -552,7 +509,6 @@ function sortSlotsForDisplay(slots = []) {
         return;
       }
 
-      // update local UI with returned data if available, otherwise patch locally
       const updatedRaw = body?.data || body?.service || null;
 
       setServices((list) =>
@@ -589,7 +545,6 @@ function sortSlotsForDisplay(slots = []) {
     }
   }
 
-  // Remove service -> DELETE call
   async function removeService(id) {
     if (!window.confirm("Are you sure you want to remove this service?"))
       return;
@@ -612,11 +567,10 @@ function sortSlotsForDisplay(slots = []) {
     }
   }
 
-  // When changing file in edit form, store both preview AND file
   function onImageFileChange(e) {
     const f = e.target.files?.[0];
     if (!f) return;
-    // revoke previous objectURL if any
+    
     if (editForm?.imagePreview && editForm.imagePreview.startsWith("blob:")) {
       try {
         URL.revokeObjectURL(editForm.imagePreview);
@@ -635,7 +589,7 @@ function sortSlotsForDisplay(slots = []) {
       }, 0) || 0) + 1;
     const newSlot = {
       id: `s-${nextId}`,
-      date: todayISO, // default to today
+      date: todayISO, 
       hour: "10",
       minute: "00",
       ampm: "AM",
@@ -645,26 +599,21 @@ function sortSlotsForDisplay(slots = []) {
 
   function updateSlot(slotId, field, value) {
     setEditForm((p) => {
-      // find existing slot to compare
       const oldSlot = (p.slots || []).find((s) => s.id === slotId) || {};
-      // restrict changes that would set a date before today
       if (field === "date" && value) {
-        // block selecting a past date
         if (value < todayISO) {
           addToast(
             "Cannot select a past date. Choose today or a future date.",
             "error"
           );
-          return p; // ignore change
+          return p; 
         }
       }
 
-      // prepare new slots
       const newSlots = (p.slots || []).map((s) =>
         s.id === slotId ? { ...s, [field]: value } : s
       );
 
-      // show duplicate hint (non-blocking)
       const dupKey = findDuplicateInSlots(newSlots || []);
       if (dupKey) {
         const [date, hour, minute, ampm] = dupKey.split("|");
@@ -690,7 +639,6 @@ function sortSlotsForDisplay(slots = []) {
     }));
   }
 
-  // Combined filtering by search and availability
   const filtered = services
     .filter((s) => s.name.toLowerCase().includes(search.trim().toLowerCase()))
     .filter((s) => {
@@ -700,7 +648,6 @@ function sortSlotsForDisplay(slots = []) {
       return true;
     });
 
-  // Format date helper
   function formatDateHuman(dateStr) {
     if (!dateStr) return "";
     const parts = dateStr.split("-");
@@ -713,7 +660,6 @@ function sortSlotsForDisplay(slots = []) {
 
   return (
     <div className={s.pageContainer}>
-      {/* Header */}
       <div className={s.headerContainer}>
         <div className="w-full md:w-auto">
           <h1 className={s.headerTitle}>Services</h1>
@@ -773,7 +719,6 @@ function sortSlotsForDisplay(slots = []) {
         </div>
       </div>
 
-      {/* Grid */}
       <div className={s.servicesGrid}>
         {filtered.map((svc) => {
           const isOpen = !!openDetails[svc.id];
@@ -1073,7 +1018,7 @@ function sortSlotsForDisplay(slots = []) {
                             No slots scheduled
                           </div>
                         ) : (
-                          // sort slots for display: past-first, then today+future
+                          
                           sortSlotsForDisplay(svc.slots).map((slot) => (
                             <div key={slot.id} className={s.slotItem}>
                               <Calendar className={s.slotIcon} />
@@ -1118,7 +1063,6 @@ function sortSlotsForDisplay(slots = []) {
         <div className={s.emptyState}>No services match your search.</div>
       )}
 
-      {/* Toast containers */}
       <div className={s.toastContainerTop}>
         {toasts
           .filter((t) => t.position === "top-right")
