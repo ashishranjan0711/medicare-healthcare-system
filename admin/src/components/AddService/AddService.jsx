@@ -1,4 +1,4 @@
-// AddService.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import {
   Image as ImageIcon,
@@ -18,10 +18,10 @@ export default function AddService({ apiBase, serviceId }) {
   const API_BASE = apiBase || "https://medicare-healthcare-system-bcked.onrender.com";
 
   const fileRef = useRef(null);
-  const [imagePreview, setImagePreview] = useState(null); // either objectURL or remote imageUrl
-  const [imageFile, setImageFile] = useState(null); // File when user chooses a new one
-  const [hasExistingImage, setHasExistingImage] = useState(false); // true if fetched service had an imageUrl
-  const [removeImage, setRemoveImage] = useState(false); // user wants to remove existing image
+  const [imagePreview, setImagePreview] = useState(null); 
+  const [imageFile, setImageFile] = useState(null); 
+  const [hasExistingImage, setHasExistingImage] = useState(false); 
+  const [removeImage, setRemoveImage] = useState(false); 
 
   const [serviceName, setServiceName] = useState("");
   const [about, setAbout] = useState("");
@@ -31,11 +31,11 @@ export default function AddService({ apiBase, serviceId }) {
   const [instructions, setInstructions] = useState([""]);
   const [slots, setSlots] = useState([]);
 
-  // Date/time controls for adding a slot
+  
   const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // local midnight today
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); 
   const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth(); // 0-11
+  const currentMonth = today.getMonth(); 
   const currentDate = today.getDate();
 
   const years = Array.from({ length: 5 }).map((_, i) => currentYear + i);
@@ -61,9 +61,9 @@ export default function AddService({ apiBase, serviceId }) {
   );
   const ampm = ["AM", "PM"];
 
-  // initial values as strings matching options
+  
   const [slotDay, setSlotDay] = useState(String(currentDate));
-  const [slotMonth, setSlotMonth] = useState(String(currentMonth)); // store month index
+  const [slotMonth, setSlotMonth] = useState(String(currentMonth)); 
   const [slotYear, setSlotYear] = useState(String(currentYear));
   const [slotHour, setSlotHour] = useState("11");
   const [slotMinute, setSlotMinute] = useState("00");
@@ -73,7 +73,7 @@ export default function AddService({ apiBase, serviceId }) {
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
 
-  // compute days for selected month/year (respecting month length)
+  
   const selectedYearNum = Number(slotYear);
   const selectedMonthNum = Number(slotMonth);
   const daysInSelectedMonth = new Date(
@@ -85,17 +85,15 @@ export default function AddService({ apiBase, serviceId }) {
     String(i + 1)
   );
 
-  // clamp selected day if month/year changes to a smaller month
+ 
   useEffect(() => {
     if (Number(slotDay) > daysInSelectedMonth) {
       setSlotDay(String(daysInSelectedMonth));
     }
-    // if user selected a year/month that is earlier than today (shouldn't happen since we disable),
-    // ensure the day is at least today's date for the same month/year
-    // (we mostly rely on disabling month/day options below)
-  }, [slotMonth, slotYear, daysInSelectedMonth]); // eslint-disable-line
+   
+  }, [slotMonth, slotYear, daysInSelectedMonth]); 
 
-  // ----- Fetch service when editing -----
+
   useEffect(() => {
     let mounted = true;
     async function loadService() {
@@ -127,7 +125,7 @@ export default function AddService({ apiBase, serviceId }) {
             : [""]
         );
         setSlots(Array.isArray(data.slots) ? data.slots : []);
-        // image: show remote image URL as preview
+        
         if (data.imageUrl) {
           setImagePreview(data.imageUrl);
           setHasExistingImage(true);
@@ -147,11 +145,11 @@ export default function AddService({ apiBase, serviceId }) {
     };
   }, [serviceId, API_BASE]);
 
-  // ----- Image change -----
+
   function handleImageChange(e) {
     const f = e.target.files?.[0];
     if (!f) return;
-    // if previous preview is an object URL revoke it
+    
     if (imagePreview && imagePreview.startsWith("blob:")) {
       try {
         URL.revokeObjectURL(imagePreview);
@@ -159,12 +157,12 @@ export default function AddService({ apiBase, serviceId }) {
     }
     setImageFile(f);
     setImagePreview(URL.createObjectURL(f));
-    // if user chooses a new file, we should no longer be removing the existing image
+   
     setRemoveImage(false);
     setHasExistingImage(false);
   }
 
-  // ----- Instructions helpers -----
+ 
   function addInstruction() {
     setInstructions((s) => [...s, ""]);
   }
@@ -175,7 +173,7 @@ export default function AddService({ apiBase, serviceId }) {
     setInstructions((s) => s.filter((_, idx) => idx !== i));
   }
 
-  // ----- Reset form -----
+  
   function resetForm() {
     if (imagePreview && imagePreview.startsWith("blob:")) {
       try {
@@ -200,7 +198,7 @@ export default function AddService({ apiBase, serviceId }) {
     setTimeout(() => setToast(null), 3500);
   }
 
-  // helper: convert selected 12h components to a Date object (local)
+ 
   function selectedDateTime() {
     const d = Number(slotDay);
     const m = Number(slotMonth);
@@ -209,7 +207,7 @@ export default function AddService({ apiBase, serviceId }) {
     const mm = Number(slotMinute);
     const ap = slotAmPm;
 
-    // convert 12h to 24h
+   
     if (ap === "AM") {
       if (h === 12) h = 0;
     } else {
@@ -224,9 +222,9 @@ export default function AddService({ apiBase, serviceId }) {
     return sel.getTime() <= Date.now();
   }
 
-  // ----- Slots -----
+  
   function addSlot() {
-    // build formatted string as before
+    
     const m = months[Number(slotMonth)];
     const d = String(slotDay).padStart(2, "0");
     const y = slotYear;
@@ -235,7 +233,7 @@ export default function AddService({ apiBase, serviceId }) {
     const ap = slotAmPm;
     const formatted = `${d} ${m} ${y} • ${h}:${mm} ${ap}`;
 
-    // prevent duplicates
+    
     if (slots.includes(formatted)) {
       showToast(
         "error",
@@ -245,7 +243,6 @@ export default function AddService({ apiBase, serviceId }) {
       return;
     }
 
-    // block past date/time
     if (isSelectedDateTimeInPast()) {
       showToast(
         "error",
@@ -267,10 +264,10 @@ export default function AddService({ apiBase, serviceId }) {
     showToast("info", "Slot Removed", `Removed: ${removedSlot}`);
   }
 
-  // ----- Validation -----
+  
   function validate() {
     const newErrors = {};
-    // When creating: require imageFile or existing image
+   
     if (!imageFile && !hasExistingImage) newErrors.image = true;
     if (!serviceName.trim()) newErrors.serviceName = true;
     if (!about.trim()) newErrors.about = true;
@@ -282,7 +279,7 @@ export default function AddService({ apiBase, serviceId }) {
     return Object.keys(newErrors).length === 0;
   }
 
-  // ----- Submit (create or update) -----
+  
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate()) {
@@ -303,13 +300,11 @@ export default function AddService({ apiBase, serviceId }) {
       const numericPrice = String(price).replace(/[^\d.-]/g, "");
       fd.append("price", numericPrice === "" ? "0" : numericPrice);
       fd.append("availability", availability);
-      // arrays serialized as JSON
+      
       fd.append("instructions", JSON.stringify(instructions));
       fd.append("slots", JSON.stringify(slots));
 
-      // Image handling:
-      // - If user selected a new file -> append under "image"
-      // - If user checked removeImage -> add removeImage flag
+      
       if (imageFile) {
         fd.append("image", imageFile);
       } else if (removeImage) {
@@ -337,12 +332,11 @@ export default function AddService({ apiBase, serviceId }) {
         `${serviceName} saved with ${slots.length} slot(s).`
       );
 
-      // If created new, reset form. If edited, update preview states to reflect server response
       if (!serviceId) {
         resetForm();
         if (fileRef.current) fileRef.current.value = null;
       } else {
-        // update local state to reflect server returned object (if available)
+        
         const saved = data?.data || null;
         if (saved) {
           setHasExistingImage(Boolean(saved.imageUrl));
@@ -359,10 +353,10 @@ export default function AddService({ apiBase, serviceId }) {
     }
   }
 
-  // ----- UI -----
+ 
   return (
     <div className={addServiceStyles.container.main}>
-      {/* Toast Notification */}
+      
       <div className={addServiceStyles.toast.container}>
         {toast && (
           <div
@@ -443,14 +437,13 @@ export default function AddService({ apiBase, serviceId }) {
         </div>
 
         <div className={addServiceStyles.grids.main}>
-          {/* left column - image */}
+          
           <div className="lg:col-span-1 md:col-span-1 col-span-1 flex flex-col items-center">
             <div
               className={addServiceStyles.imageUpload.container(errors.image)}
             >
               <div className={addServiceStyles.imageUpload.preview}>
                 {imagePreview ? (
-                  // if preview is remote url or object URL
                   <img
                     src={imagePreview}
                     alt="preview"
@@ -485,7 +478,7 @@ export default function AddService({ apiBase, serviceId }) {
                   <button
                     type="button"
                     onClick={() => {
-                      // If current preview is a blob URL, revoke it
+                      
                       if (imagePreview && imagePreview.startsWith("blob:")) {
                         try {
                           URL.revokeObjectURL(imagePreview);
@@ -493,7 +486,7 @@ export default function AddService({ apiBase, serviceId }) {
                       }
                       setImagePreview(null);
                       setImageFile(null);
-                      // mark that user wants to remove the existing image
+                      
                       if (hasExistingImage) {
                         setRemoveImage(true);
                         setHasExistingImage(false);
@@ -507,7 +500,6 @@ export default function AddService({ apiBase, serviceId }) {
                 )}
               </div>
 
-              {/* option to remove existing image explicitly when editing */}
               {hasExistingImage && (
                 <div className="w-full text-xs text-gray-600 mt-2 flex items-center gap-2">
                   <input
@@ -530,7 +522,6 @@ export default function AddService({ apiBase, serviceId }) {
             </div>
           </div>
 
-          {/* right column - main fields */}
           <div className="lg:col-span-2 md:col-span-1 col-span-1 space-y-6">
             <div className={addServiceStyles.grids.formFields}>
               <div>
@@ -586,7 +577,6 @@ export default function AddService({ apiBase, serviceId }) {
               />
             </div>
 
-            {/* instructions */}
             <div>
               <div className="flex items-center justify-between">
                 <label className={addServiceStyles.labels.standard}>
@@ -632,7 +622,6 @@ export default function AddService({ apiBase, serviceId }) {
               </div>
             </div>
 
-            {/* slot controls */}
             <div
               className={addServiceStyles.slots.container(errors.slots)}
             >
