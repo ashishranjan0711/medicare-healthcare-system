@@ -10,20 +10,15 @@ export default function Hero({ role = "admin", userName = "Doctor" }) {
 
   return (
     <div className={heroStyles.container}>
-      {/* Navbar */}
       <AnimatedNavbar />
-
-      {/* Centered Hero */}
       <main className={heroStyles.mainContainer}>
         <section className={heroStyles.section}>
-          {/* Soft decorative background */}
           <div className={heroStyles.decorativeBg.container}>
             <div className={heroStyles.decorativeBg.blurBackground}>
               <div className={heroStyles.decorativeBg.blurShape} />
             </div>
 
             <div className={heroStyles.contentBox}>
-              {/* Image */}
               <div className={heroStyles.logoContainer}>
                 <img
                   src={logoImg}
@@ -32,7 +27,6 @@ export default function Hero({ role = "admin", userName = "Doctor" }) {
                 />
               </div>
 
-              {/* Heading */}
               <h1 className={heroStyles.heading}>
                 {isDoctor
                   ? `Welcome, Dr. ${userName}`
@@ -45,7 +39,6 @@ export default function Hero({ role = "admin", userName = "Doctor" }) {
                   : "Manage hospital operations, doctors, staff, patient records, and system settings from a centralized control panel."}
               </p>
 
-              {/* Info Cards */}
               <div className={heroStyles.infoCards.container}>
                 <div className={heroStyles.infoCards.card}>
                   <h3 className={heroStyles.infoCards.cardTitle}>
