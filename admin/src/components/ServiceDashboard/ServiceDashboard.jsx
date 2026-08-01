@@ -1,11 +1,3 @@
-// ServiceDashboard.jsx (fixed)
-// Replace your current component with this file.
-// Notes:
-//  - To notify this dashboard from other code after a booking:
-//      window.dispatchEvent(new Event('services:updated'))
-//    or (for cross-tab) write to localStorage:
-//      localStorage.setItem('service_bookings_updated', Date.now())
-//  - This component also exposes window.refreshServices() for convenience.
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -20,9 +12,6 @@ import { serviceDashboardStyles } from "../../assets/dummyStyles";
 
 const API_BASE = "https://medicare-healthcare-system-bcked.onrender.com";
 
-/* -----------------------
-   Normalizer - robust to multiple backend shapes
-   ----------------------- */
 function normalizeService(doc) {
   if (!doc) return null;
   const id = doc._id || doc.id || String(Math.random()).slice(2);
@@ -34,7 +23,7 @@ function normalizeService(doc) {
     doc.image ||
     doc.avatar ||
     `https://i.pravatar.cc/150?u=${id}`;
-  // various possible stat shapes
+  
   const totalAppointments =
     doc.totalAppointments ??
     doc.appointments?.total ??
@@ -67,9 +56,6 @@ function normalizeService(doc) {
   };
 }
 
-/* -----------------------
-   Main component
-   ----------------------- */
 export default function ServiceDashboard({ services: servicesProp = null }) {
   const [services, setServices] = useState(
     Array.isArray(servicesProp) ? servicesProp.map(normalizeService) : []
@@ -84,11 +70,10 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
   const fetchingRef = useRef(false);
   const pollHandleRef = useRef(null);
 
-  // helper: build fetch options (sends cookies by default; use auth token if available)
   function buildFetchOptions() {
     const opts = {
       method: "GET",
-      credentials: "include", // IMPORTANT: include cookies for authenticated APIs
+      credentials: "include", 
       headers: {
         "Content-Type": "application/json",
       },
@@ -98,9 +83,8 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
     return opts;
   }
 
-  // centralized fetcher
   async function fetchServices({ showLoading = true } = {}) {
-    if (fetchingRef.current) return; // avoid overlapping fetches
+    if (fetchingRef.current) return; 
     fetchingRef.current = true;
     try {
       if (showLoading) {
@@ -118,7 +102,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
       }
       const body = await res.json();
 
-      // backend might return { services: [...] } or { data: [...] } or array directly
       let list = [];
       if (Array.isArray(body)) list = body;
       else if (Array.isArray(body.services)) list = body.services;
@@ -138,7 +121,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
       console.error("Service fetch error:", err);
       if (mountedRef.current) {
         setError(err.message || "Failed to load services");
-        // do not wipe existing services on error — keep last known
       }
     } finally {
       if (mountedRef.current && showLoading) setLoading(false);
@@ -146,23 +128,18 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
     }
   }
 
-  // expose a global helper so other components can call it directly if needed
   useEffect(() => {
     window.refreshServices = () => fetchServices({ showLoading: true });
     return () => {
       try {
-        // cleanup global
-        // eslint-disable-next-line no-undef
         delete window.refreshServices;
       } catch {}
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     mountedRef.current = true;
 
-    // if parent supplied services, use them and don't fetch
     if (Array.isArray(servicesProp)) {
       setServices(servicesProp.map(normalizeService));
       setLoading(false);
@@ -171,16 +148,14 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
       };
     }
 
-    // initial load
     fetchServices({ showLoading: true });
 
-    // poll while tab is visible (every 10s)
     function startPolling() {
       if (pollHandleRef.current) return;
       pollHandleRef.current = setInterval(() => {
         if (document.visibilityState === "visible")
           fetchServices({ showLoading: false });
-      }, 10000); // 10s - adjust if needed
+      }, 10000); 
     }
 
     function stopPolling() {
@@ -192,19 +167,16 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
 
     startPolling();
 
-    // refresh on focus
     function onFocus() {
       fetchServices({ showLoading: false });
     }
     window.addEventListener("focus", onFocus);
 
-    // refresh when other parts of the app dispatch a custom event
     function onServicesUpdated() {
       fetchServices({ showLoading: false });
     }
     window.addEventListener("services:updated", onServicesUpdated);
 
-    // cross-tab notification via localStorage
     function onStorage(e) {
       if (e?.key === "service_bookings_updated") {
         fetchServices({ showLoading: false });
@@ -212,7 +184,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
     }
     window.addEventListener("storage", onStorage);
 
-    // also refresh when tab becomes visible
     function onVisibilityChange() {
       if (document.visibilityState === "visible") {
         fetchServices({ showLoading: false });
@@ -228,10 +199,8 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
       window.removeEventListener("storage", onStorage);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [servicesProp]);
 
-  // filtering + search
   const filteredServices = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return services;
@@ -287,7 +256,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
             </p>
           </div>
 
-          {/* Refresh & summary */}
           <div className={serviceDashboardStyles.refresh.container}>
             <div className={serviceDashboardStyles.refresh.countText}>
               {loading
@@ -298,7 +266,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
             </div>
             <button
               onClick={() => {
-                // allow manual refresh only when not supplied by prop
                 if (Array.isArray(servicesProp)) return;
                 fetchServices({ showLoading: true });
               }}
@@ -314,7 +281,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
           </div>
         </div>
 
-        {/* Stat cards */}
         <div className={serviceDashboardStyles.statGrid}>
           <StatCard
             icon={<ClipboardList size={18} />}
@@ -343,7 +309,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
           />
         </div>
 
-        {/* Search Bar */}
         <div className={serviceDashboardStyles.search.container}>
           <div className={serviceDashboardStyles.search.inputContainer}>
             <Search size={16} className="text-emerald-700" />
@@ -364,7 +329,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
           </div>
         </div>
 
-        {/* Table / List */}
         <div className={serviceDashboardStyles.table.container}>
           <div className={serviceDashboardStyles.table.headerMd}>
             <div className={serviceDashboardStyles.table.headerText}>Service</div>
@@ -404,7 +368,7 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
                     key={s.id}
                     className={serviceDashboardStyles.table.row}
                   >
-                    {/* Tablet view (md only) */}
+                    
                     <div className={serviceDashboardStyles.table.tabletView}>
                       <div className="flex items-center gap-3">
                         <div className={serviceDashboardStyles.table.tabletImage}>
@@ -438,7 +402,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
                       </div>
                     </div>
 
-                    {/* Desktop view (lg and up) */}
                     <div className={serviceDashboardStyles.table.desktopView}>
                       <div className="col-span-5 flex items-center gap-4">
                         <div className={serviceDashboardStyles.table.desktopImage}>
@@ -470,7 +433,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
                       </div>
                     </div>
 
-                    {/* Mobile / stacked */}
                     <div className={serviceDashboardStyles.table.mobileView}>
                       <div className="flex items-start gap-3">
                         <div className={serviceDashboardStyles.table.mobileImage}>
@@ -530,7 +492,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
           </div>
         </div>
 
-        {/* Show more / less */}
         {filteredServices.length > INITIAL_COUNT && (
           <div className={serviceDashboardStyles.showMore.container}>
             <button
@@ -548,9 +509,6 @@ export default function ServiceDashboard({ services: servicesProp = null }) {
   );
 }
 
-/* -----------------------
-   StatCard helper
-   ----------------------- */
 function StatCard({ icon, label, value }) {
   return (
     <div className={serviceDashboardStyles.statCard.container}>
