@@ -154,7 +154,6 @@ export async function updateService(req, res) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
-
 export async function deleteService(req, res) {
   try {
     const { id } = req.params;
