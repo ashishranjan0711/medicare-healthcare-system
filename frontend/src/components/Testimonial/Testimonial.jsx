@@ -78,7 +78,7 @@ const Testimonial = () => {
     const scrollRight = scrollRefRight.current;
     if (!scrollLeft || !scrollRight) return;
 
-    let scrollSpeed = 0.5; // preserved animation speed
+    let scrollSpeed = 0.5; 
     let rafId;
 
     const smoothScroll = () => {
@@ -86,7 +86,6 @@ const Testimonial = () => {
         scrollLeft.scrollTop += scrollSpeed;
         scrollRight.scrollTop -= scrollSpeed;
 
-        // seamless infinite loop
         if (scrollLeft.scrollTop >= scrollLeft.scrollHeight / 2) {
           scrollLeft.scrollTop = 0;
         }
@@ -150,7 +149,6 @@ const Testimonial = () => {
 
           <p className={testimonialStyles.quote}>"{testimonial.text}"</p>
 
-          {/* Stars on small screens beneath text */}
           <div className={testimonialStyles.mobileStarsContainer}>
             {renderStars(testimonial.rating)}
           </div>
@@ -174,7 +172,7 @@ const Testimonial = () => {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Left (Doctors) */}
+        
         <div
           className={`${testimonialStyles.columnContainer} ${testimonialStyles.leftColumnBorder}`}
         >
@@ -186,7 +184,6 @@ const Testimonial = () => {
           <div
             ref={scrollRefLeft}
             className={testimonialStyles.scrollContainer}
-            // touch support: pause while swiping
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
           >
@@ -200,7 +197,6 @@ const Testimonial = () => {
           </div>
         </div>
 
-        {/* Right (Patients) */}
         <div
           className={`${testimonialStyles.columnContainer} ${testimonialStyles.rightColumnBorder}`}
         >
@@ -227,7 +223,6 @@ const Testimonial = () => {
         </div>
       </div>
 
-      {/* helper styles */}
       <style>{testimonialStyles.animationStyles}</style>
     </div>
   );

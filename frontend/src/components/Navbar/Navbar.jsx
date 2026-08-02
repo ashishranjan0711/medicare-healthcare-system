@@ -28,7 +28,6 @@ export default function Navbar() {
   const clerk = useClerk();
   const navigate = useNavigate();
 
-  /* Hide / show navbar on scroll */
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -43,7 +42,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  /* Sync doctor login state */
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === STORAGE_KEY) {
@@ -54,7 +52,6 @@ export default function Navbar() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  /* Close mobile menu on outside click */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && navRef.current && !navRef.current.contains(event.target)) {
@@ -112,7 +109,6 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop navigation */}
             <div className={navbarStyles.desktopNav}>
               <div className={navbarStyles.navItemsContainer}>
                 {navItems.map((item) => {
@@ -134,11 +130,8 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Right side */}
             <div className={navbarStyles.rightContainer}>
-              {/* ================= PATIENT LOGGED OUT ================= */}
               <SignedOut>
-                {/* Doctor Admin */}
                 <Link
                   to="/doctor-admin/login"
                   className={navbarStyles.doctorAdminButton}
@@ -148,8 +141,6 @@ export default function Navbar() {
                     Doctor Admin
                   </span>
                 </Link>
-
-                {/* Patient Login */}
                 <button
                   onClick={() => clerk.openSignIn()}
                   className={navbarStyles.loginButton}
@@ -159,12 +150,10 @@ export default function Navbar() {
                 </button>
               </SignedOut>
 
-              {/* ================= PATIENT LOGGED IN ================= */}
               <SignedIn>
                 <UserButton afterSignOutUrl="/" />
               </SignedIn>
 
-              {/* Mobile/Tablet toggle */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={navbarStyles.mobileToggle}
@@ -180,7 +169,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile/Tablet menu */}
           {isOpen && (
             <div className={navbarStyles.mobileMenu}>
               {navItems.map((item, idx) => {
@@ -200,7 +188,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              {/* Patient logged out */}
               <SignedOut>
                 <Link
                   to="/doctor-admin/login"
@@ -224,7 +211,6 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        {/* Animations */}
         <style>{navbarStyles.animationStyles}</style>
       </nav>
     </>

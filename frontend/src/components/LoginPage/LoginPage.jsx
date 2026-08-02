@@ -43,9 +43,6 @@ export default function LoginPage({ apiBase }) {
         return;
       }
 
-      /* ================= IMPORTANT PART ================= */
-
-      // token
       const token = json?.token || json?.data?.token;
       if (!token) {
         toast.error("Authentication token missing");
@@ -53,7 +50,6 @@ export default function LoginPage({ apiBase }) {
         return;
       }
 
-      // doctor id (supports all common API shapes)
       const doctorId =
         json?.data?._id || json?.doctor?._id || json?.data?.doctor?._id;
 
@@ -63,7 +59,6 @@ export default function LoginPage({ apiBase }) {
         return;
       }
 
-      // store token
       localStorage.setItem(STORAGE_KEY, token);
       window.dispatchEvent(
         new StorageEvent("storage", { key: STORAGE_KEY, newValue: token }),
@@ -73,7 +68,6 @@ export default function LoginPage({ apiBase }) {
         style: toastStyles.successToast,
       });
 
-      // ✅ Navigate to dynamic route
       setTimeout(() => {
         navigate(`/doctor-admin/${doctorId}`);
       }, 700);

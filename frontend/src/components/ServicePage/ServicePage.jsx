@@ -1,4 +1,4 @@
-// src/pages/ServicePage/ServicePage.jsx
+
 import React, { useEffect, useState } from "react";
 import { ChevronsRight, MousePointer2Off } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -168,7 +168,6 @@ export default function ServicePage({ apiBase, previewCount = 9999 }) {
 
   useEffect(() => {
     loadServices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [API_BASE]);
 
   const shown = services.slice(0, previewCount);
@@ -183,7 +182,6 @@ export default function ServicePage({ apiBase, previewCount = 9999 }) {
           </p>
         </header>
 
-        {/* Error + retry */}
         {error && (
           <div className={servicePageStyles.errorContainer}>
             <div className={servicePageStyles.errorText}>{error}</div>
@@ -196,7 +194,6 @@ export default function ServicePage({ apiBase, previewCount = 9999 }) {
           </div>
         )}
 
-        {/* Grid */}
         {loading ? (
           <section className={servicePageStyles.skeletonGrid}>
             {Array.from({ length: 8 }).map((_, i) => (
