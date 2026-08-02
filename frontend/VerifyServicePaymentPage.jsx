@@ -45,7 +45,6 @@ const VerifyServicePaymentPage = () => {
         if (cancelled) return;
 
         if (res?.data?.success) {
-          // ✅ Service payment confirmed
           navigate("/appointments?service_payment=Paid", {
             replace: true,
           });
