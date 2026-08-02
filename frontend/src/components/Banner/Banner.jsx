@@ -17,22 +17,15 @@ const Banner = () => {
   const navigate = useNavigate();
   return (
     <div className={bannerStyles.bannerContainer}>
-      {/* Main Banner Container with Animated Border */}
       <div className={bannerStyles.mainContainer}>
-        {/* Auto-Animated Border Outline */}
         <div className={bannerStyles.borderOutline}>
-          {/* Outer animated band (keeps your original class names to avoid style regressions) */}
           <div className={bannerStyles.outerAnimatedBand}></div>
-          {/* Inner white border to separate content */}
           <div className={bannerStyles.innerWhiteBorder}></div>
         </div>
 
-        {/* Content Container */}
         <div className={bannerStyles.contentContainer}>
           <div className={bannerStyles.flexContainer}>
-            {/* Left Content Section */}
             <div className={bannerStyles.leftContent}>
-              {/* Header with Badge */}
               <div className={bannerStyles.headerBadgeContainer}>
                 <div className={bannerStyles.stethoscopeContainer}>
                   <div className={bannerStyles.stethoscopeInner}>
@@ -41,13 +34,11 @@ const Banner = () => {
                 </div>
 
                 <div className={bannerStyles.titleContainer}>
-                  {/* Responsive heading sizes: smaller on phones, same on desktop */}
                   <h1 className={bannerStyles.title}>
                     Medi
                     <span className={bannerStyles.titleGradient}>Care+</span>
                   </h1>
 
-                  {/* Stars */}
                   <div className={bannerStyles.starsContainer}>
                     <div className={bannerStyles.starsInner}>
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -58,7 +49,6 @@ const Banner = () => {
                 </div>
               </div>
 
-              {/* Tagline */}
               <p className={bannerStyles.tagline}>
                 Premium Healthcare
                 <span className={`block ${bannerStyles.taglineHighlight}`}>
@@ -66,7 +56,6 @@ const Banner = () => {
                 </span>
               </p>
 
-              {/* Features Grid */}
               <div className={bannerStyles.featuresGrid}>
                 <div
                   className={`${bannerStyles.featureItem} ${bannerStyles.featureBorderGreen}`}
@@ -100,7 +89,6 @@ const Banner = () => {
                 </div>
               </div>
 
-              {/* CTA Buttons */}
               <div className={bannerStyles.ctaButtonsContainer}>
                 <button
                   onClick={() => navigate("/doctors")}
@@ -127,13 +115,9 @@ const Banner = () => {
               </div>
             </div>
 
-            {/* Right Image Section */}
             <div className={bannerStyles.rightImageSection}>
-              {/* Main Image Container */}
               <div className={bannerStyles.imageContainer}>
-                {/* Main Image Frame */}
                 <div className={bannerStyles.imageFrame}>
-                  {/* Controlled heights for small / medium / large screens so the image looks consistent */}
                   <img
                     src={banner}
                     alt="Professional Healthcare Team"
@@ -145,7 +129,6 @@ const Banner = () => {
           </div>
         </div>
       </div>{" "}
-      {/* end main container */}
     </div>
   )
 }

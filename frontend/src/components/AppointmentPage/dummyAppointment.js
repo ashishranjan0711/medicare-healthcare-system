@@ -1,8 +1,4 @@
-// src/data/appointmentsData.js
 
-// ---------------------
-// DOCTOR APPOINTMENTS
-// ---------------------
 export const appointments = [
   {
     id: 1,
@@ -14,7 +10,6 @@ export const appointments = [
     date: "25 Nov 2025",
     time: "11:30 AM",
     payment: "Online",
-    // explicit status:
     status: "Confirmed",
   },
   {
@@ -27,7 +22,6 @@ export const appointments = [
     date: "26 Nov 2025",
     time: "03:00 PM",
     payment: "Cash",
-    // still using old boolean style also supported
     confirmed: false,
   },
   {
@@ -40,7 +34,7 @@ export const appointments = [
     date: "23 Nov 2025",
     time: "10:00 AM",
     payment: "Online",
-    status: "Completed", // you can force Completed
+    status: "Completed", 
   },
   {
     id: 4,
@@ -69,9 +63,6 @@ export const appointments = [
   },
 ];
 
-// ---------------------
-// SERVICE BOOKINGS
-// ---------------------
 export const bookedServices = [
   {
     id: 1,

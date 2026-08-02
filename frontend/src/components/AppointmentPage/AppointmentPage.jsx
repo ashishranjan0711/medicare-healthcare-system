@@ -21,7 +21,6 @@ import {
 const API_BASE = import.meta.env.VITE_API_URL || "https://medicare-healthcare-system-bcked.onrender.com";
 const API = axios.create({ baseURL: API_BASE });
 
-/* -------------------- Helpers -------------------- */
 function pad(n) {
   return String(n ?? 0).padStart(2, "0");
 }
@@ -100,7 +99,6 @@ function computeStatus(item) {
   return item.confirmed ? "Confirmed" : "Pending";
 }
 
-/* -------------------- Badges -------------------- */
 const PaymentBadge = ({ payment }) => {
   return payment === "Online" ? (
     <span className={badgeStyles.paymentBadge.online}>
@@ -149,7 +147,6 @@ const StatusBadge = ({ itemStatus }) => {
   );
 };
 
-/* -------------------- Component -------------------- */
 export default function AppointmentPage() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const { user } = useUser();
@@ -166,7 +163,6 @@ export default function AppointmentPage() {
   });
   const [error, setError] = useState(null);
 
-  /* -------------------- Fetch Doctor Appointments -------------------- */
   const loadDoctorAppointments = useCallback(async () => {
     if (!isLoaded) return;
     setLoadingDoctors(true);
@@ -258,7 +254,6 @@ export default function AppointmentPage() {
     }
   }, [isLoaded, getToken, user]);
 
-  /* -------------------- Fetch Service Appointments -------------------- */
   const loadServiceAppointments = useCallback(async () => {
     if (!isLoaded) return;
     setLoadingServices(true);
@@ -332,7 +327,6 @@ export default function AppointmentPage() {
     }
   }, [isLoaded, getToken, user]);
 
-  /* -------------------- Combined loader -------------------- */
   useEffect(() => {
     loadDoctorAppointments();
     loadServiceAppointments();
@@ -344,7 +338,6 @@ export default function AppointmentPage() {
     loadServiceAppointments,
   ]);
 
-  /* -------------------- Normalization for UI -------------------- */
   function normalizeRescheduled(rt) {
     if (!rt) return null;
     if (rt.date && rt.time) return { date: rt.date, time: rt.time };
@@ -479,12 +472,10 @@ export default function AppointmentPage() {
       .map((x) => ({ ...x, status: computeStatus(x) }));
   }, [serviceAppts]);
 
-  /* -------------------- Render -------------------- */
   return (
     <div className={appointmentPageStyles.pageContainer}>
       <Toaster position="top-right" />
       <div className={appointmentPageStyles.maxWidthContainer}>
-        {/* ------------ DOCTOR APPOINTMENTS ------------ */}
         <h1 className={appointmentPageStyles.doctorTitle}>
           Your Doctor Appointments
         </h1>
@@ -545,7 +536,6 @@ export default function AppointmentPage() {
           ))}
         </div>
 
-        {/* ------------ SERVICE BOOKINGS ------------ */}
         <h2 className={appointmentPageStyles.serviceTitle}>
           Your Booked Services
         </h2>
