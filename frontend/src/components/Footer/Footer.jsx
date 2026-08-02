@@ -70,7 +70,7 @@ const Footer = () => {
 
   return (
     <footer className={footerStyles.footerContainer}>
-      {/* Floating Medical Icons */}
+      
       <div className={footerStyles.floatingIcon1}>
         <Stethoscope className={footerStyles.stethoscopeIcon} />
       </div>
@@ -82,10 +82,9 @@ const Footer = () => {
         <Activity className={footerStyles.activityIcon} />
       </div>
 
-      {/* Main Footer Content */}
       <div className={footerStyles.mainContent}>
         <div className={footerStyles.gridContainer}>
-          {/* Company Info & Logo */}
+        
           <div className={footerStyles.companySection}>
             <div className={footerStyles.logoContainer}>
               <div className={footerStyles.logoWrapper}>
@@ -135,7 +134,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div className={footerStyles.linksSection}>
             <h3 className={footerStyles.sectionTitle}>Quick Links</h3>
             <ul className={footerStyles.linksList}>
@@ -157,7 +155,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Services */}
           <div className={footerStyles.linksSection}>
             <h3 className={footerStyles.sectionTitle}>Our Services</h3>
             <ul className={footerStyles.linksList}>
@@ -172,16 +169,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter & Social */}
           <div className={footerStyles.newsletterSection}>
             <h3 className={footerStyles.newsletterTitle}>Stay Connected</h3>
             <p className={footerStyles.newsletterDescription}>
               Stay informed with expert health tips, trusted medical updates, and wellness insights—delivered directly to your inbox.
             </p>
 
-            {/* Newsletter form */}
             <div className={footerStyles.newsletterForm}>
-              {/* Mobile newsletter */}
               <div className={footerStyles.mobileNewsletterContainer}>
                 <input
                   type="email"
@@ -195,7 +189,6 @@ const Footer = () => {
                 </button>
               </div>
 
-              {/* Desktop newsletter */}
               <div className={footerStyles.desktopNewsletterContainer}>
                 <input
                   type="email"
@@ -211,7 +204,6 @@ const Footer = () => {
                 </button>
               </div>
 
-              {/* Social icons */}
               <div className={footerStyles.socialContainer}>
                 {socialLinks.map(({ Icon, color, name, href }, index) => (
                   <a
@@ -232,7 +224,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className={footerStyles.bottomSection}>
           <div className={footerStyles.copyright}>
             <span>© {currentYear} MediCare Healthcare By Ashish Ranjan</span>
@@ -240,19 +231,9 @@ const Footer = () => {
 
           <div className={footerStyles.designerText}>
             <span>Designed by: Ashish Ranjan</span>
-            {/* <a
-              href="https://hexagondigitalservices.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={footerStyles.designerLink}
-            >
-              Hexagon Digital Services
-            </a> */}
           </div>
         </div>
       </div>
-
-      {/* Animation Styles */}
       <style>{footerStyles.animationStyles}</style>
     </footer>
   );

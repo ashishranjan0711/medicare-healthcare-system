@@ -1,4 +1,4 @@
-// src/pages/Home/HomeDoctors.jsx
+
 import React, { useEffect, useState } from "react";
 import { Medal, ChevronsRight, MousePointer2Off } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -10,7 +10,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // load doctors from backend
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -30,14 +29,11 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
           return;
         }
 
-        // support both { success: true, data: [...] } and plain array
         const items = (json && (json.data || json)) || [];
-        // normalize each doctor for the UI
         const normalized = (Array.isArray(items) ? items : []).map((d) => {
           const id = d._id || d.id;
           const image =
             d.imageUrl || d.image || d.imageSmall || d.imageSrc || "";
-          // availability might be stored as string "Available"/"Unavailable" OR boolean
           const available =
             (typeof d.availability === "string"
               ? d.availability.toLowerCase() === "available"
@@ -89,7 +85,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
           </p>
         </div>
 
-        {/* error / retry */}
         {error ? (
           <div className={homeDoctorsStyles.errorContainer}>
             <div className={homeDoctorsStyles.errorText}>{error}</div>
@@ -97,8 +92,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
               onClick={() => {
                 setLoading(true);
                 setError("");
-                // trigger useEffect reload by toggling API_BASE (simple re-run)
-                // A more robust approach would expose a reload function; for now we call fetch again:
                 (async () => {
                   try {
                     const res = await fetch(`${API_BASE}/api/doctors`);
@@ -145,7 +138,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
           </div>
         ) : null}
 
-        {/* Loading skeleton */}
         {loading ? (
           <div className={homeDoctorsStyles.skeletonGrid}>
             {Array.from({ length: previewCount }).map((_, i) => (
@@ -160,7 +152,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
             ))}
           </div>
         ) : (
-          // Doctors grid
           <div className={homeDoctorsStyles.doctorsGrid}>
             {preview.map((doctor) => (
               <article
@@ -168,7 +159,7 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
                 className={homeDoctorsStyles.article}
                 aria-labelledby={`doctor-${doctor.id}-name`}
               >
-                {/* IMAGE — CLICKABLE ONLY IF AVAILABLE */}
+                
                 {doctor.available ? (
                   <Link
                     to={`/doctors/${doctor.id}`}
@@ -199,7 +190,7 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
                         e.currentTarget.src = "/placeholder-doctor.jpg";
                       }}
                     />
-                    {/* optional small badge */}
+                    
                     <div className={homeDoctorsStyles.unavailableBadge}>
                       Not available
                     </div>
@@ -227,7 +218,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
                   </div>
 
                   <div className={homeDoctorsStyles.buttonContainer}>
-                    {/* BUTTON — keep full width (desktop unchanged) */}
                     <div className="w-full">
                       {doctor.available ? (
                         <Link

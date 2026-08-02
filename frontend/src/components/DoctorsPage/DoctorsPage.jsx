@@ -20,7 +20,6 @@ const DoctorsPage = ({ apiBase }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAll, setShowAll] = useState(false);
 
-  // Load doctors once
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -46,7 +45,6 @@ const DoctorsPage = ({ apiBase }) => {
           const id = d._id || d.id;
           const image =
             d.imageUrl || d.image || d.imageSmall || d.imageSrc || "";
-          // availability may be a string or boolean; normalize to boolean
           let available = true;
           if (typeof d.availability === "string") {
             available = d.availability.toLowerCase() === "available";
@@ -90,7 +88,6 @@ const DoctorsPage = ({ apiBase }) => {
     };
   }, [API_BASE]);
 
-  // Derived filtered list (memoized)
   const filteredDoctors = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return allDoctors;
@@ -105,7 +102,6 @@ const DoctorsPage = ({ apiBase }) => {
     ? filteredDoctors
     : filteredDoctors.slice(0, 8);
 
-  // Retry load
   const retry = async () => {
     setLoading(true);
     setError("");
@@ -153,20 +149,16 @@ const DoctorsPage = ({ apiBase }) => {
 
   return (
     <div className={doctorsPageStyles.mainContainer}>
-      {/* Background shapes */}
       <div className={doctorsPageStyles.backgroundShape1}></div>
       <div className={doctorsPageStyles.backgroundShape2}></div>
 
       <div className={doctorsPageStyles.wrapper}>
-        {/* Header */}
         <div className={doctorsPageStyles.headerContainer}>
           <h1 className={doctorsPageStyles.headerTitle}>Our Medical Experts</h1>
           <p className={doctorsPageStyles.headerSubtitle}>
             Find your ideal doctor by name or specialization
           </p>
         </div>
-
-        {/* Search Bar */}
         <div className={doctorsPageStyles.searchContainer}>
           <div className={doctorsPageStyles.searchWrapper}>
             <input
@@ -192,7 +184,6 @@ const DoctorsPage = ({ apiBase }) => {
           </div>
         </div>
 
-        {/* Error area */}
         {error && (
           <div className={doctorsPageStyles.errorContainer}>
             <div className={doctorsPageStyles.errorText}>{error}</div>
@@ -204,7 +195,6 @@ const DoctorsPage = ({ apiBase }) => {
           </div>
         )}
 
-        {/* Doctors Grid */}
         {loading ? (
           <div className={doctorsPageStyles.skeletonGrid}>
             {Array.from({ length: 8 }).map((_, i) => (
@@ -318,7 +308,6 @@ const DoctorsPage = ({ apiBase }) => {
           </div>
         )}
 
-        {/* Show More / Hide Button */}
         {filteredDoctors.length > 8 && (
           <div className={doctorsPageStyles.showMoreContainer}>
             <button
@@ -344,7 +333,6 @@ const DoctorsPage = ({ apiBase }) => {
         )}
       </div>
 
-      {/* Animations - Keep inline style tag as it is */}
       <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(20px); }
