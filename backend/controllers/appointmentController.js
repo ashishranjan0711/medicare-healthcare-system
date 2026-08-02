@@ -1,4 +1,4 @@
-// controllers/appointmentController.js
+
 import Stripe from "stripe";
 import Appointment from "../models/Appointment.js";
 import Doctor from "../models/Doctor.js";
@@ -42,7 +42,6 @@ function resolveClerkUserId(req) {
   }
 }
 
-/* ---------------- list / single / by-patient ---------------- */
 
 export const getAppointments = async (req, res) => {
   try {
@@ -118,7 +117,6 @@ export const getAppointmentsByPatient = async (req, res) => {
   }
 };
 
-/* ---------------- create appointment ---------------- */
 
 export const createAppointment = async (req, res) => {
   try {
@@ -154,7 +152,6 @@ export const createAppointment = async (req, res) => {
       return res.status(400).json({ success: false, message: "fee must be a valid number" });
     }
 
-    // Duplicate booking prevention
     const existingBooking = await Appointment.findOne({
       doctorId,
       createdBy: clerkUserId,
@@ -170,7 +167,6 @@ export const createAppointment = async (req, res) => {
       });
     }
 
-    // Fetch doctor as source-of-truth
     let doctor = null;
     try {
       doctor = await Doctor.findById(doctorId).lean();
@@ -179,7 +175,6 @@ export const createAppointment = async (req, res) => {
     }
     if (!doctor) return res.status(404).json({ success: false, message: "Doctor not found" });
 
-    // Resolve owner, names, images, etc.
     let resolvedOwner = ownerFromBody || doctor.owner || null;
     if (!resolvedOwner) resolvedOwner = MAJOR_ADMIN_ID || String(doctorId);
 
@@ -226,7 +221,6 @@ export const createAppointment = async (req, res) => {
       sessionId: null,
     };
 
-    // Free appointment
     if (numericFee === 0) {
       const created = await Appointment.create({
         ...base,
@@ -237,7 +231,6 @@ export const createAppointment = async (req, res) => {
       return res.status(201).json({ success: true, appointment: created, checkoutUrl: null });
     }
 
-    // Cash payment
     if (paymentMethod === "Cash") {
       const created = await Appointment.create({
         ...base,
@@ -247,7 +240,6 @@ export const createAppointment = async (req, res) => {
       return res.status(201).json({ success: true, appointment: created, checkoutUrl: null });
     }
 
-    // Online: Stripe
     if (!stripe) return res.status(500).json({ success: false, message: "Stripe not configured on server" });
 
     const frontBase = buildFrontendBase(req);
@@ -309,7 +301,6 @@ export const createAppointment = async (req, res) => {
   }
 };
 
-/* ---------------- confirm payment ---------------- */
 
 export const confirmPayment = async (req, res) => {
   try {
@@ -330,7 +321,6 @@ export const confirmPayment = async (req, res) => {
       return res.status(400).json({ success: false, message: "Payment not completed" });
     }
 
-    // Try match by sessionId first
     let appt = await Appointment.findOneAndUpdate(
       { sessionId: session_id },
       {
@@ -342,7 +332,6 @@ export const confirmPayment = async (req, res) => {
       { new: true }
     );
 
-    // fallback: try match via metadata (doctorId + mobile + patientName)
     if (!appt) {
       const meta = session.metadata || {};
       if (meta.doctorId && meta.mobile && meta.patientName) {
@@ -365,7 +354,6 @@ export const confirmPayment = async (req, res) => {
       }
     }
 
-    // last attempt: find appointment created in last 15 minutes with matching amount
     if (!appt) {
       const amount = Math.round((session.amount_total || 0) / 100);
       const fifteenAgo = new Date(Date.now() - 1000 * 60 * 15);
@@ -393,7 +381,6 @@ export const confirmPayment = async (req, res) => {
   }
 };
 
-/* ---------------- update / cancel / stats / by-doctor / registered count ---------------- */
 
 export const updateAppointment = async (req, res) => {
   try {

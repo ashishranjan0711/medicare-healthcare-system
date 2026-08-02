@@ -1,4 +1,4 @@
-// controllers/serviceAppointmentController.js
+
 import ServiceAppointment from "../models/serviceAppointment.js";
 import Service from "../models/Service.js";
 import Stripe from "stripe";
@@ -58,7 +58,6 @@ function resolveClerkUserId(req) {
   }
 }
 
-/* CREATE */
 export const createServiceAppointment = async (req, res) => {
   try {
     const body = req.body || {};
@@ -111,7 +110,6 @@ export const createServiceAppointment = async (req, res) => {
       return res.status(400).json({ success: false, message: "Time missing or invalid — provide time string or hour, minute and ampm." });
     }
 
-    // DUPLICATE BOOKING CHECK
     try {
       const existing = await ServiceAppointment.findOne({
         serviceId: String(serviceId),
@@ -127,7 +125,6 @@ export const createServiceAppointment = async (req, res) => {
       console.warn("Duplicate booking check failed:", chkErr);
     }
 
-    // Fetch service snapshot (non-fatal)
     let svc = null;
     try { svc = await Service.findById(serviceId).lean(); } catch (e) { console.warn("Service lookup failed:", e?.message || e); }
 
@@ -154,19 +151,16 @@ export const createServiceAppointment = async (req, res) => {
       notes: notes || "",
     };
 
-    // Free appointment
     if (numericAmount === 0) {
       const created = await ServiceAppointment.create({ ...base, status: "Pending", payment: { method: "Cash", status: "Pending", amount: 0, paidAt: new Date() } });
       return res.status(201).json({ success: true, appointment: created });
     }
 
-    // Cash booking
     if (paymentMethod === "Cash") {
       const created = await ServiceAppointment.create({ ...base, status: "Pending", payment: { method: "Cash", status: "Pending", amount: numericAmount, meta } });
       return res.status(201).json({ success: true, appointment: created, checkoutUrl: null });
     }
 
-    // Online booking (Stripe)
     if (!stripe) return res.status(500).json({ success: false, message: "Stripe not configured on server" });
     const frontendBase = buildFrontendBase(req);
     if (!frontendBase) return res.status(500).json({ success: false, message: "Frontend base URL not available. Set FRONTEND_URL or provide Origin header." });
@@ -227,7 +221,6 @@ export const createServiceAppointment = async (req, res) => {
   }
 };
 
-/* CONFIRM (called after Stripe redirect/webhook) */
 export const confirmServicePayment = async (req, res) => {
   try {
     const { session_id } = req.query;
@@ -278,7 +271,6 @@ export const confirmServicePayment = async (req, res) => {
   }
 };
 
-/* GET list */
 export const getServiceAppointments = async (req, res) => {
   try {
     const { serviceId, mobile, status, page: pageRaw = 1, limit: limitRaw = 50, search = "" } = req.query;
@@ -311,7 +303,6 @@ export const getServiceAppointments = async (req, res) => {
   }
 };
 
-/* GET by id */
 export const getServiceAppointmentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -324,7 +315,6 @@ export const getServiceAppointmentById = async (req, res) => {
   }
 };
 
-/* UPDATE */
 export const updateServiceAppointment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -374,7 +364,6 @@ export const updateServiceAppointment = async (req, res) => {
   }
 };
 
-/* CANCEL */
 export const cancelServiceAppointment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -392,7 +381,6 @@ export const cancelServiceAppointment = async (req, res) => {
   }
 };
 
-/* STATS */
 export const getServiceAppointmentStats = async (req, res) => {
   try {
     const services = await Service.aggregate([
@@ -418,7 +406,6 @@ export const getServiceAppointmentStats = async (req, res) => {
   }
 };
 
-/* GET appointments for current patient (/me) */
 export const getServiceAppointmentsByPatient = async (req, res) => {
   try {
     const clerkUserId = resolveClerkUserId(req);

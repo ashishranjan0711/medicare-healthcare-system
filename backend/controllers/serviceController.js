@@ -1,9 +1,6 @@
 import Service from "../models/Service.js";
 import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
-/* -----------------------
-   Helpers
-   ----------------------- */
 const parseJsonArrayField = (field) => {
   if (!field) return [];
   if (Array.isArray(field)) return field;
@@ -22,15 +19,11 @@ const parseJsonArrayField = (field) => {
   return [];
 };
 
-// store date as plain YYYY-MM-DD + time-as-string
 function normalizeSlotsToMap(slotStrings = []) {
-  // return a map: { "2026-01-06": ["10:00 AM", "02:30 PM"] }
   const map = {};
   slotStrings.forEach((raw) => {
-    // parse your "DD Mon YYYY • HH:MM AM" format (or keep raw if you prefer)
     const m = raw.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s*•\s*(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!m) {
-      // fallback: keep raw in an "unspecified" bucket
       map["unspecified"] = map["unspecified"] || [];
       map["unspecified"].push(raw);
       return;
@@ -55,9 +48,6 @@ const parseAvailability = (v) => {
   return s === "available" || s === "true";
 };
 
-/* -----------------------
-   CREATE
-   ----------------------- */
 export async function createService(req, res) {
   try {
     const b = req.body || {};
@@ -99,9 +89,6 @@ export async function createService(req, res) {
   }
 }
 
-/* -----------------------
-   GET ALL
-   ----------------------- */
 export async function getServices(req, res) {
   try {
     const list = await Service.find().sort({ createdAt: -1 }).lean();
@@ -112,9 +99,6 @@ export async function getServices(req, res) {
   }
 }
 
-/* -----------------------
-   GET BY ID
-   ----------------------- */
 export async function getServiceById(req, res) {
   try {
     const { id } = req.params;
@@ -127,9 +111,6 @@ export async function getServiceById(req, res) {
   }
 }
 
-/* -----------------------
-   UPDATE (partial)
-   ----------------------- */
 export async function updateService(req, res) {
   try {
     const { id } = req.params;
@@ -174,9 +155,6 @@ export async function updateService(req, res) {
   }
 }
 
-/* -----------------------
-   DELETE
-   ----------------------- */
 export async function deleteService(req, res) {
   try {
     const { id } = req.params;

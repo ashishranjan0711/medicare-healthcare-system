@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 import Doctor from "../models/Doctor.js";
 import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
-/* ---------------- Helpers ---------------- */
-
 const parseTimeToMinutes = (t = "") => {
   const [time = "0:00", ampm = ""] = (t || "").split(" ");
   const [hh = 0, mm = 0] = time.split(":").map(Number);
@@ -39,7 +37,6 @@ function parseScheduleInput(s) {
 function normalizeDocForClient(raw = {}) {
   const doc = { ...raw };
 
-  // convert Mongoose Map to plain object
   if (doc.schedule && typeof doc.schedule.forEach === "function") {
     const obj = {};
     doc.schedule.forEach((val, key) => {
@@ -57,8 +54,6 @@ function normalizeDocForClient(raw = {}) {
 
   return doc;
 }
-
-/* ---------------- Controller ---------------- */
 
 export async function createDoctor(req, res) {
   try {
