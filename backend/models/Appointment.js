@@ -1,25 +1,18 @@
-// models/Appointment.js
+
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema(
   {
-    /* =========================
-       Ownership / Auth
-    ========================== */
     owner: { type: String, required: true, index: true },
     createdBy: { type: String, default: null, index: true },
 
-    /* =========================
-       Patient Info
-    ========================== */
+    
     patientName: { type: String, required: true, trim: true },
     mobile: { type: String, required: true, trim: true },
     age: { type: Number, default: null },
     gender: { type: String, default: "" },
 
-    /* =========================
-       Doctor Info
-    ========================== */
+   
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
@@ -29,16 +22,14 @@ const appointmentSchema = new mongoose.Schema(
     doctorName: { type: String, default: "" },
     speciality: { type: String, default: "" },
 
-    // ✅ NEW: Doctor Image
+    
     doctorImage: {
-      url: { type: String, default: "" },        // image URL (Cloudinary / S3 / etc.)
-      publicId: { type: String, default: "" },   // optional (for delete/update)
+      url: { type: String, default: "" },        
+      publicId: { type: String, default: "" },   
     },
 
-    /* =========================
-       Appointment Info
-    ========================== */
-    date: { type: String, required: true }, // YYYY-MM-DD
+   
+    date: { type: String, required: true }, 
     time: { type: String, required: true },
 
     fees: { type: Number, required: true, min: 0, default: 0 },
@@ -54,9 +45,6 @@ const appointmentSchema = new mongoose.Schema(
       time: { type: String },
     },
 
-    /* =========================
-       Payment Info
-    ========================== */
     payment: {
       method: {
         type: String,

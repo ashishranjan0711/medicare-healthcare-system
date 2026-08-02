@@ -10,7 +10,6 @@ const doctorSchema = new mongoose.Schema(
       index: true,
     },
 
-    // ⚠️ Plain text password (NOT hashed)
     password: {
       type: String,
       required: true,
@@ -43,7 +42,6 @@ const doctorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// text search
 doctorSchema.index({ name: "text", specialization: "text" });
 
 const Doctor =

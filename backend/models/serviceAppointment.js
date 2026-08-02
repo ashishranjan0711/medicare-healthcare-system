@@ -1,21 +1,11 @@
 import mongoose from "mongoose";
 
-/**
- * ServiceAppointment model
- * - Hospital / Service based appointment
- * - No doctor
- * - Single major admin (no owner field)
- * - Fully compatible with Service Appointments frontend
- */
-
 const serviceAppointmentSchema = new mongoose.Schema(
   {
-    /* =========================
-       Patient Info
-       ========================= */
+    
     createdBy: {
       type: String,
-      default: null, // optional patient user id
+      default: null, 
       index: true,
     },
 
@@ -42,9 +32,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
       default: "",
     },
 
-    /* =========================
-       Service Info
-       ========================= */
+    
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
@@ -53,13 +41,12 @@ const serviceAppointmentSchema = new mongoose.Schema(
 
     serviceName: {
       type: String,
-      required: true, // denormalized for UI speed
+      required: true, 
     },
 
-    // ✅ NEW: Service Image (snapshot)
     serviceImage: {
-      url: { type: String, default: "" },        // Cloudinary / S3 / etc.
-      publicId: { type: String, default: "" },   // optional (for delete/update)
+      url: { type: String, default: "" },        
+      publicId: { type: String, default: "" },   
     },
 
     fees: {
@@ -68,22 +55,20 @@ const serviceAppointmentSchema = new mongoose.Schema(
       min: 0,
     },
 
-    /* =========================
-       Schedule
-       ========================= */
+  
     date: {
-      type: String, // YYYY-MM-DD
+      type: String, 
       required: true,
       index: true,
     },
 
     hour: {
-      type: Number, // 1–12
+      type: Number, 
       required: true,
     },
 
     minute: {
-      type: Number, // 0–59
+      type: Number, 
       required: true,
     },
 
@@ -93,9 +78,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
       required: true,
     },
 
-    /* =========================
-       Appointment Status
-       ========================= */
+   
     status: {
       type: String,
       enum: ["Pending", "Confirmed", "Rescheduled", "Completed", "Canceled"],
@@ -110,9 +93,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
       ampm: { type: String, enum: ["AM", "PM"] },
     },
 
-    /* =========================
-       Payment (Cash / Online)
-       ========================= */
+  
     payment: {
       method: {
         type: String,
@@ -132,7 +113,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
       },
 
       providerId: {
-        type: String, // Stripe payment_intent id
+        type: String, 
         default: "",
       },
 
@@ -142,7 +123,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
       },
 
       sessionId: {
-        type: String, // Stripe checkout session id
+        type: String, 
         default: "",
         index: true,
       },
@@ -158,9 +139,7 @@ const serviceAppointmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* =========================
-   Indexes
-   ========================= */
+
 serviceAppointmentSchema.index({ date: 1, status: 1 });
 serviceAppointmentSchema.index({ serviceId: 1 });
 serviceAppointmentSchema.index({ "payment.sessionId": 1 });

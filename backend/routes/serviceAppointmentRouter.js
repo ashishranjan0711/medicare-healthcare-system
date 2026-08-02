@@ -1,4 +1,4 @@
-// routes/serviceAppointmentRouter.js
+
 import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 
@@ -15,14 +15,12 @@ import {
 
 const router = express.Router();
 
-/* FIXED ROUTES FIRST */
 router.get("/", getServiceAppointments);
 router.get("/confirm", confirmServicePayment);
 router.get("/stats/summary", getServiceAppointmentStats);
 
 router.post("/", clerkMiddleware(), requireAuth(), createServiceAppointment);
 
-// 🔥 MUST BE BEFORE :id
 router.get(
   "/me",
   clerkMiddleware(),
@@ -30,7 +28,6 @@ router.get(
   getServiceAppointmentsByPatient
 );
 
-/* ID ROUTES LAST */
 router.get("/:id", getServiceAppointmentById);
 router.put("/:id", updateServiceAppointment);
 router.post("/:id/cancel", cancelServiceAppointment);

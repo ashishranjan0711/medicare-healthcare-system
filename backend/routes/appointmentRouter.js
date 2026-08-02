@@ -1,4 +1,4 @@
-// routes/appointmentRouter.js
+
 import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 
@@ -18,24 +18,13 @@ import {
 
 const appointmentRouter = express.Router();
 
-/* =========================
-   PUBLIC / FIXED ROUTES
-   ========================= */
-
-// list appointments
 appointmentRouter.get("/", getAppointments);
 
-// stripe confirm
 appointmentRouter.get("/confirm", confirmPayment);
 
-// stats
 appointmentRouter.get("/stats/summary", getStats);
 
-/* =========================
-   AUTHENTICATED ROUTES
-   ========================= */
 
-// create appointment
 appointmentRouter.post(
   "/",
   clerkMiddleware(),
@@ -43,14 +32,13 @@ appointmentRouter.post(
   createAppointment
 );
 
-// 🔥 IMPORTANT: /me MUST COME BEFORE /:id
 appointmentRouter.get(
   "/me",
   clerkMiddleware(),
   requireAuth(),
   getAppointmentsByPatient
 );
-// appointmentRouter.get("/:id", getAppointmentById);
+
 appointmentRouter.get(
   "/doctor/:doctorId",
   getAppointmentsByDoctor
