@@ -1,4 +1,3 @@
-// src/data/doctorsData.js
 
 import HD1 from "../assets/HD1.png";
 import HD2 from "../assets/HD2.png";
@@ -23,7 +22,6 @@ import D10 from "../assets/D10.png";
 import D11 from "../assets/D11.png";
 
 export const doctors = [
-  // 1 ----------------------------
   {
     id: 1,
     name: "Dr. Sarah Johnson",
@@ -50,7 +48,6 @@ export const doctors = [
     rating: 4.9,
   },
 
-  // 2 ----------------------------
   {
     id: 2,
     name: "Dr. Michael Chen",
@@ -73,7 +70,6 @@ export const doctors = [
     rating: 4.5,
   },
 
-  // 3 ----------------------------
   {
     id: 3,
     name: "Dr. Emily Rodriguez",
@@ -96,7 +92,6 @@ export const doctors = [
     rating: 4.8,
   },
 
-  // 4 ----------------------------
   {
     id: 4,
     name: "Dr. James Wilson",
@@ -119,7 +114,6 @@ export const doctors = [
     rating: 4.6,
   },
 
-  // 5 ----------------------------
   {
     id: 5,
     name: "Dr. Priya Sharma",
@@ -142,7 +136,6 @@ export const doctors = [
     rating: 4.7,
   },
 
-  // 6 ----------------------------
   {
     id: 6,
     name: "Dr. Robert Brown",
@@ -165,7 +158,6 @@ export const doctors = [
     rating: 4.4,
   },
 
-  // 7 ----------------------------
   {
     id: 7,
     name: "Dr. Lisa Wang",
@@ -188,7 +180,6 @@ export const doctors = [
     rating: 4.9,
   },
 
-  // 8 ----------------------------
   {
     id: 8,
     name: "Dr. David Kim",
@@ -212,7 +203,6 @@ export const doctors = [
     rating: 4.6,
   },
 
-  // 9 ----------------------------
   {
     id: 9,
     name: "Dr. Rohan Mehta",
@@ -235,7 +225,6 @@ export const doctors = [
     rating: 4.7,
   },
 
-  // 10 ----------------------------
   {
     id: 10,
     name: "Dr. Kavita Rao",
@@ -258,7 +247,6 @@ export const doctors = [
     rating: 4.8,
   },
 
-  // 11 ----------------------------
   {
     id: 11,
     name: "Dr. Sameer Ali",
@@ -281,7 +269,6 @@ export const doctors = [
     rating: 4.5,
   },
 
-  // 12 ----------------------------
   {
     id: 12,
     name: "Dr. Aditi Verma",
@@ -304,7 +291,6 @@ export const doctors = [
     rating: 4.7,
   },
 
-  // 13 ----------------------------
   {
     id: 13,
     name: "Dr. Neha Kapoor",
@@ -327,7 +313,6 @@ export const doctors = [
     rating: 4.6,
   },
 
-  // 14 ----------------------------
   {
     id: 14,
     name: "Dr. Ishaan Khanna",
@@ -350,7 +335,6 @@ export const doctors = [
     rating: 4.4,
   },
 
-  // 15 ----------------------------
   {
     id: 15,
     name: "Dr. Virat Anand",
@@ -373,7 +357,6 @@ export const doctors = [
     rating: 4.8,
   },
 
-  // 16 ----------------------------
   {
     id: 16,
     name: "Dr. Jatin Arora",
@@ -396,7 +379,6 @@ export const doctors = [
     rating: 4.7,
   },
 
-  // 17 ----------------------------
   {
     id: 17,
     name: "Dr. Aarav Singh",
@@ -419,7 +401,6 @@ export const doctors = [
     rating: 4.5,
   },
 
-  // 18 ----------------------------
   {
     id: 18,
     name: "Dr. Megha Shah",
@@ -442,7 +423,6 @@ export const doctors = [
     rating: 4.7,
   },
 
-  // 19 ----------------------------
   {
     id: 19,
     name: "Dr. Helena Grace",
@@ -465,7 +445,6 @@ export const doctors = [
     rating: 4.8,
   },
 
-  // 20 ----------------------------
   {
     id: 20,
     name: "Dr. Kabir Malhotra",

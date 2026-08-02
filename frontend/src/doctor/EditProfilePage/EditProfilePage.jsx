@@ -24,7 +24,6 @@ import { editProfilePageStyles, iconSize } from "../../assets/dummyStyles";
 
 const STORAGE_KEY = "doctorToken_v1";
 
-/* ----------------- helpers ----------------- */
 function parse12HourTimeToMinutes(t) {
   if (!t) return 0;
   const [time, ampm] = t.split(" ");
@@ -55,9 +54,8 @@ function dedupeAndSortSchedule(schedule = {}) {
   return out;
 }
 
-/* ----------------- main component ----------------- */
 export default function EditProfilePage({ apiBase }) {
-  const { id } = useParams(); // expects route like /doctor-edit/:id
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const API_BASE = "https://medicare-healthcare-system-bcked.onrender.com/api/doctors";
 
@@ -80,7 +78,6 @@ export default function EditProfilePage({ apiBase }) {
         const json = await res.json();
         if (!res.ok) throw new Error(json?.message || "Failed to fetch doctor");
         const d = json.data || json || {};
-        // Normalize fields (backend may return different keys)
         d.schedule = dedupeAndSortSchedule(d.schedule || {});
         d.imageUrl =
           d.imageUrl || d.image || d.imageUrl === null ? d.imageUrl : d.image;
@@ -102,7 +99,6 @@ export default function EditProfilePage({ apiBase }) {
       if (imagePreview && imagePreview.startsWith("blob:"))
         URL.revokeObjectURL(imagePreview);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const addToast = (text, type = "success") => {
@@ -115,7 +111,6 @@ export default function EditProfilePage({ apiBase }) {
     );
   };
 
-  /* ---------- schedule helpers ---------- */
   const addDate = (dateStr) => {
     if (!dateStr) return;
     if (doc.schedule[dateStr]) {
@@ -161,7 +156,6 @@ export default function EditProfilePage({ apiBase }) {
     addToast(`Date ${dateStr} removed`, "info");
   };
 
-  /* ---------- image handling ---------- */
   const handleImageChange = (e) => {
     if (!editing) return;
     const file = e.target.files?.[0];
@@ -205,7 +199,6 @@ export default function EditProfilePage({ apiBase }) {
     }
   };
 
-  /* ---------- save to backend ---------- */
   const handleSave = async () => {
     if (!doc) return;
     setSaveMessage({ type: "saving", text: "Saving profile..." });
@@ -214,7 +207,6 @@ export default function EditProfilePage({ apiBase }) {
     try {
       const form = new FormData();
 
-      // append updatable fields
       const updatable = [
         "name",
         "specialization",
@@ -273,7 +265,6 @@ export default function EditProfilePage({ apiBase }) {
     }
   };
 
-  /* ---------- UI field configs ---------- */
   const fieldConfigs = doc
     ? [
         {
@@ -306,7 +297,6 @@ export default function EditProfilePage({ apiBase }) {
           value: doc.location || "",
           onChange: (v) => setDoc((d) => ({ ...d, location: v })),
         },
-        // NEW: Patients
         {
           icon: User,
           label: "Patients",
@@ -314,7 +304,6 @@ export default function EditProfilePage({ apiBase }) {
           onChange: (v) =>
             setDoc((d) => ({ ...d, patients: v === "" ? "" : Number(v) || 0 })),
         },
-        // NEW: Success (percent or count depending on your model)
         {
           icon: CheckCircle,
           label: "Success",
@@ -322,7 +311,6 @@ export default function EditProfilePage({ apiBase }) {
           onChange: (v) =>
             setDoc((d) => ({ ...d, success: v === "" ? "" : Number(v) || 0 })),
         },
-        // NEW: Rating (0.0 - 5.0)
         {
           icon: Star,
           label: "Rating (out of 5)",
@@ -343,7 +331,6 @@ export default function EditProfilePage({ apiBase }) {
       ]
     : [];
 
-  /* ---------- render ---------- */
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -368,7 +355,6 @@ export default function EditProfilePage({ apiBase }) {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.maxWidthContainer}>
-        {/* Toasts */}
         <div className={styles.toastContainer}>
           {toasts.map((t) => (
             <div
@@ -430,7 +416,6 @@ export default function EditProfilePage({ apiBase }) {
                 </p>
 
                 <div className={styles.statsContainer}>
-                  {/* Patients */}
                   <div className={styles.statItem}>
                     <User
                       className={`${styles.statIcon} ${styles.statEmeraldIcon}`}
@@ -462,7 +447,6 @@ export default function EditProfilePage({ apiBase }) {
                     </div>
                   </div>
 
-                  {/* Success */}
                   <div className={styles.statItem}>
                     <CheckCircle
                       className={`${styles.statIcon} ${styles.statEmeraldIcon}`}
@@ -492,7 +476,6 @@ export default function EditProfilePage({ apiBase }) {
                     </div>
                   </div>
 
-                  {/* Rating */}
                   <div className={styles.ratingStatItem}>
                     <Star className={styles.statAmberIcon("star")} />
                     <div className="flex flex-col">
@@ -528,7 +511,6 @@ export default function EditProfilePage({ apiBase }) {
                     </div>
                   </div>
 
-                  {/* Fee */}
                   <div className={styles.feeStatItem}>
                     <BadgeIndianRupee className={styles.statAmberIcon()} />
                     {!editing ? (
@@ -583,7 +565,6 @@ export default function EditProfilePage({ apiBase }) {
               </div>
             </div>
 
-            {/* Form */}
             <div className={styles.formSection}>
               <h2 className={styles.sectionTitle}>
                 <div className={styles.sectionIconContainer}>
@@ -615,7 +596,6 @@ export default function EditProfilePage({ apiBase }) {
               </div>
             </div>
 
-            {/* About */}
             <div className={styles.formSection}>
               <h2 className={styles.sectionTitle}>
                 <div className={styles.sectionIconContainer}>
@@ -641,7 +621,6 @@ export default function EditProfilePage({ apiBase }) {
               </div>
             </div>
 
-            {/* Schedule */}
             <div className={styles.formSection}>
               <div className={styles.scheduleHeader}>
                 <h2 className={styles.sectionTitle}>
@@ -770,7 +749,6 @@ export default function EditProfilePage({ apiBase }) {
               )}
             </div>
 
-            {/* Actions */}
             <div className={styles.actionsSection}>
               <div className={styles.actionsText}>
                 {editing
@@ -814,7 +792,6 @@ export default function EditProfilePage({ apiBase }) {
   );
 }
 
-/* ---------- Helper components ---------- */
 function AddDate({ onAdd }) {
   const styles = editProfilePageStyles;
   const [value, setValue] = useState("");

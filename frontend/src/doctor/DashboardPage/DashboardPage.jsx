@@ -12,9 +12,6 @@ import { dashboardStyles } from "../../assets/dummyStyles";
 
 const API_BASE = "https://medicare-healthcare-system-bcked.onrender.com"; // override by passing apiBase prop
 
-/* -------------------------
-   Helpers: date/time + status mapping
-   ------------------------- */
 function parseDateTime(date, time) {
   return new Date(`${date}T${time}:00`);
 }
@@ -87,16 +84,12 @@ function to12HourFrom24(hhmm) {
   return `${String(h12)}:${String(mm).padStart(2, "0")} ${ampm}`;
 }
 
-/* -------------------------
-   Normalizer: backend -> frontend shape used in this page
-   ------------------------- */
 function normalizeAppointment(a) {
   if (!a) return null;
   const id = a._id || a.id || String(Math.random()).slice(2);
   const patient = a.patientName || a.patient || a.name || "Unknown";
   const age = a.age ?? a.patientAge ?? "";
   const gender = a.gender || "";
-  // inside normalizeAppointment(a) ...
   const doctorName =
     (a.doctorId && typeof a.doctorId === "object" && a.doctorId.name) ||
     a.doctorName ||
@@ -147,9 +140,6 @@ function normalizeAppointment(a) {
   };
 }
 
-/* -------------------------
-   Component: DashboardPage (fetch + update + reschedule)
-   ------------------------- */
 export default function DashboardPage({ apiBase }) {
   const params = useParams();
   const location = useLocation();
@@ -158,11 +148,6 @@ export default function DashboardPage({ apiBase }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // resolved API base and doctorId detection order:
-  // 1) prop doctorId
-  // 2) route param :doctorId
-  // 3) query string ?doctorId=
-  // 4) undefined -> fallback to all appointments
   location.search;
   const API = apiBase || API_BASE;
 
@@ -172,13 +157,11 @@ export default function DashboardPage({ apiBase }) {
     setLoading(true);
     setError(null);
     try {
-      // If doctorId present, call the doctor-specific endpoint.
-      // Backend route: GET /api/appointments/doctor/:doctorId
+      
       const basePath = `${API}/api/appointments/doctor/${encodeURIComponent(
         doctorId,
       )}`;
 
-      // keep limit modest
       const url = `${basePath}`;
       console.log(url);
 
@@ -192,7 +175,6 @@ export default function DashboardPage({ apiBase }) {
       }
       const body = await res.json();
 
-      // backend may return appointments array at body.appointments
       const list = Array.isArray(body.appointments)
         ? body.appointments
         : Array.isArray(body)
@@ -215,10 +197,8 @@ export default function DashboardPage({ apiBase }) {
 
   useEffect(() => {
     fetchAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [API, doctorId]);
 
-  // computed values
   const sorted = useMemo(() => {
     return [...appointments].sort(
       (a, b) => parseDateTime(b.date, b.time) - parseDateTime(a.date, a.time),
@@ -238,9 +218,6 @@ export default function DashboardPage({ apiBase }) {
     .filter((a) => a.status === "complete")
     .reduce((s, a) => s + (Number(a.fee) || 0), 0);
 
-  /* -------------------------
-     Update status (remote)
-     ------------------------- */
   async function updateStatusRemote(id, newStatusFrontend) {
     const appt = appointments.find((p) => p.id === id);
     if (!appt) return;
@@ -248,7 +225,6 @@ export default function DashboardPage({ apiBase }) {
 
     const backendStatus = frontendToBackendStatus(newStatusFrontend);
 
-    // optimistic update
     setAppointments((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: newStatusFrontend } : p)),
     );
@@ -268,19 +244,15 @@ export default function DashboardPage({ apiBase }) {
       const data = await res.json();
       const updated = data.appointment || data;
 
-      // Merge server update with previous raw appointment so we don't lose fields like doctorImage/doctorId
       setAppointments((prev) =>
         prev.map((p) => {
           if (p.id !== id) return p;
 
-          // Use previous raw data as base, overlay server returned fields
           const mergedRaw = { ...(p.raw || {}), ...(updated || {}) };
 
-          // normalizeAppointment will prefer doctorId.imageUrl, doctorImage, etc.
           const normalized = normalizeAppointment(mergedRaw);
           if (normalized) return normalized;
 
-          // fallback: keep existing p but update status conservatively
           return {
             ...p,
             status: backendToFrontendStatus(updated.status || backendStatus),
@@ -290,7 +262,6 @@ export default function DashboardPage({ apiBase }) {
       );
     } catch (err) {
       console.error("updateStatusRemote:", err);
-      // revert optimistic
       setAppointments((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: appt.status } : p)),
       );
@@ -298,9 +269,6 @@ export default function DashboardPage({ apiBase }) {
     }
   }
 
-  /* -------------------------
-     Reschedule (remote): send { date, time } where time is "hh:mm AM/PM"
-     ------------------------- */
   async function rescheduleRemote(id, newDate, newTime24) {
     const appt = appointments.find((p) => p.id === id);
     if (!appt) return;
@@ -309,7 +277,6 @@ export default function DashboardPage({ apiBase }) {
     const hhmm = newTime24;
     const time12 = to12HourFrom24(hhmm);
 
-    // optimistic
     setAppointments((prev) =>
       prev.map((p) =>
         p.id === id
@@ -335,13 +302,11 @@ export default function DashboardPage({ apiBase }) {
         prev.map((p) => {
           if (p.id !== id) return p;
 
-          // Merge server-provided fields with existing raw so we don't drop images/doctor info
           const mergedRaw = { ...(p.raw || {}), ...(updated || {}) };
 
           const normalized = normalizeAppointment(mergedRaw);
           if (normalized) return normalized;
 
-          // Fallback: apply the optimistic values we already used
           return {
             ...p,
             date: newDate,
@@ -354,14 +319,10 @@ export default function DashboardPage({ apiBase }) {
     } catch (err) {
       console.error("rescheduleRemote:", err);
       setError(err.message || "Failed to reschedule");
-      // simplest recovery: reload list to restore server state
       await fetchAppointments();
     }
   }
 
-  /* -------------------------
-     UI helpers passed down to controls
-     ------------------------- */
   function updateStatus(id, newStatus) {
     updateStatusRemote(id, newStatus);
   }
@@ -370,7 +331,6 @@ export default function DashboardPage({ apiBase }) {
     rescheduleRemote(id, newDate, newTime);
   }
 
-  // Try to show doctor's name if present in data
   const doctorNameFromData =
     appointments[0]?.raw?.doctorId?.name ||
     appointments[0]?.raw?.doctorName ||
@@ -408,7 +368,6 @@ export default function DashboardPage({ apiBase }) {
           </div>
         </div>
 
-        {/* Stat cards */}
         <div className={dashboardStyles.statsGrid}>
           <StatCard
             title="Total Appointments"
@@ -456,7 +415,6 @@ export default function DashboardPage({ apiBase }) {
             </div>
           </div>
 
-          {/* Cards grid */}
           <div className={dashboardStyles.cardsGrid}>
             {top8.map((a) => (
               <div key={a.id} className={dashboardStyles.appointmentCard}>
@@ -552,10 +510,6 @@ export default function DashboardPage({ apiBase }) {
     </div>
   );
 }
-
-/* -----------------------
-   Reusable components (unchanged but using styles)
-   ----------------------- */
 
 function StatCard({
   title,
@@ -675,7 +629,6 @@ function RescheduleButton({ appointment, onReschedule }) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("09:00");
 
-  // compute minDate as YYYY-MM-DD for today (local timezone)
   const minDate = React.useMemo(() => {
     const d = new Date();
     const y = d.getFullYear();
@@ -685,23 +638,20 @@ function RescheduleButton({ appointment, onReschedule }) {
   }, []);
 
   React.useEffect(() => {
-    // Normalize appointment.date to yyyy-mm-dd (handles ISO or plain date strings)
     const apptRaw = appointment.date ? String(appointment.date) : "";
-    const apptDate = apptRaw.slice(0, 10); // safe for "YYYY-MM-DD..." or "YYYY-MM-DD"
+    const apptDate = apptRaw.slice(0, 10); 
 
-    // If appointment date is today or in the future, use it; otherwise use minDate
     setDate(apptDate && apptDate >= minDate ? apptDate : minDate);
     setTime(appointment.time || "09:00");
   }, [appointment.date, appointment.time, minDate]);
 
   function save() {
     if (!date || !time) return;
-    // defensive: ensure we never submit a past date
     if (date < minDate) {
       setDate(minDate);
       return;
     }
-    onReschedule(date, time); // time is 24-hour "HH:MM"
+    onReschedule(date, time); 
     setEditing(false);
   }
 

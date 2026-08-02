@@ -5,9 +5,6 @@ import { listPageStyles } from "../../assets/dummyStyles";
 
 const API_BASE = "https://medicare-healthcare-system-bcked.onrender.com";
 
-/* -------------------------
-   Utils
-------------------------- */
 function parseDateTime(date, time) {
   return new Date(`${date}T${time}:00`);
 }
@@ -32,7 +29,6 @@ function formatDate(dateStr) {
 }
 
 function to24HourFromMaybe12(timeStr) {
-  // Accepts "09:30 AM", "9:30 PM" or "09:30"
   if (!timeStr) return "00:00";
   const m = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
   if (!m) return timeStr;
@@ -78,10 +74,6 @@ function frontendToBackendStatus(fs) {
   if (v === "rescheduled") return "Rescheduled";
   return fs;
 }
-
-/* -------------------------
-   Normalizer: adapt backend shape to UI shape used here
-------------------------- */
 function normalizeAppointment(a) {
   if (!a) return null;
   const id = a._id || a.id || String(Math.random()).slice(2);
@@ -133,7 +125,6 @@ function normalizeAppointment(a) {
   };
 }
 
-/* ================= StatusBadge ================= */
 function StatusBadge({ status }) {
   const base = listPageStyles.statusBadgeBase;
   if (status === "complete")
@@ -167,7 +158,6 @@ function StatusBadge({ status }) {
   );
 }
 
-/* ================= StatusSelect ================= */
 function StatusSelect({ appointment, onChange }) {
   const terminal =
     appointment.status === "complete" || appointment.status === "cancelled";
@@ -220,8 +210,6 @@ function StatusSelect({ appointment, onChange }) {
     </select>
   );
 }
-
-/* ================= RescheduleButton ================= */
 function RescheduleButton({ appointment, onReschedule }) {
   const terminal =
     appointment.status === "complete" || appointment.status === "cancelled";
@@ -229,7 +217,6 @@ function RescheduleButton({ appointment, onReschedule }) {
   const [date, setDate] = useState(appointment.date || "");
   const [time, setTime] = useState(appointment.time || "09:00");
 
-  // compute local today's date as YYYY-MM-DD
   const minDate = useMemo(() => {
     const d = new Date();
     const y = d.getFullYear();
@@ -240,20 +227,18 @@ function RescheduleButton({ appointment, onReschedule }) {
 
   useEffect(() => {
     const apptRaw = appointment.date ? String(appointment.date) : "";
-    const apptDate = apptRaw.slice(0, 10); // safe for ISO or "YYYY-MM-DD"
-    // Use apptDate if it's today or future; otherwise fall back to minDate
+    const apptDate = apptRaw.slice(0, 10); 
     setDate(apptDate && apptDate >= minDate ? apptDate : minDate);
     setTime(appointment.time || "09:00");
   }, [appointment.date, appointment.time, minDate]);
 
   function save() {
     if (!date || !time) return;
-    // defensive: never allow saving a date before today's local date
     if (date < minDate) {
       setDate(minDate);
       return;
     }
-    onReschedule(date, time); // time is "HH:MM" 24h
+    onReschedule(date, time); 
     setEditing(false);
   }
 
@@ -313,7 +298,6 @@ function RescheduleButton({ appointment, onReschedule }) {
   );
 }
 
-/* ================= Main Component ================= */
 export default function ListPage() {
   const [appointments, setAppointments] = useState([]);
   const [search, setSearch] = useState("");
@@ -323,7 +307,6 @@ export default function ListPage() {
   const params = useParams();
   const doctorId = params.id;
 
-  // load appointments
   async function fetchAppointments() {
     setLoading(true);
     setError(null);
@@ -360,10 +343,7 @@ export default function ListPage() {
 
   useEffect(() => {
     fetchAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // optimistic status update -> PUT /api/appointments/:id { status }
   async function updateStatusRemote(id, newStatus) {
     const appt = appointments.find((p) => p.id === id);
     if (!appt) return;
@@ -371,7 +351,6 @@ export default function ListPage() {
 
     const backendStatus = frontendToBackendStatus(newStatus);
 
-    // optimistic
     setAppointments((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
     );
@@ -404,15 +383,12 @@ export default function ListPage() {
       );
     } catch (err) {
       console.error("updateStatusRemote:", err);
-      // revert
       setAppointments((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: appt.status } : p)),
       );
       setError(err.message || "Failed to update status");
     }
   }
-
-  // optimistic reschedule -> PUT /api/appointments/:id { date, time }
   async function rescheduleRemote(id, newDate, newTime24) {
     const appt = appointments.find((p) => p.id === id);
     if (!appt) return;
@@ -420,7 +396,6 @@ export default function ListPage() {
 
     const time12 = to12HourFrom24(newTime24);
 
-    // optimistic
     setAppointments((prev) =>
       prev.map((p) =>
         p.id === id
@@ -462,7 +437,6 @@ export default function ListPage() {
     }
   }
 
-  // public wrappers (keeps original UI function names)
   function updateStatus(id, newStatus) {
     updateStatusRemote(id, newStatus);
   }

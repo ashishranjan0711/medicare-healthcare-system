@@ -9,7 +9,6 @@ export default function Navbar() {
   const params = useParams();
   const location = useLocation();
 
-  // Try params first, then try to extract from pathname (e.g. /doctor-admin/123/...)
   const doctorId = useMemo(() => {
     if (params?.id) return params.id;
     const m = location.pathname.match(/\/doctor-admin\/([^/]+)/);
@@ -17,7 +16,6 @@ export default function Navbar() {
     return null;
   }, [params, location.pathname]);
 
-  // If we don't have an id, send users to login as a safe fallback
   const basePath = doctorId
     ? `/doctor-admin/${doctorId}`
     : "/doctor-admin/login";
@@ -30,9 +28,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Main Navbar */}
       <nav className={navbarStylesDr.navContainer}>
-        {/* Left Brand */}
         <div className={navbarStylesDr.leftBrand}>
           <div className={navbarStylesDr.logoContainer}>
             <img
@@ -48,15 +44,13 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-
-        {/* Desktop Menu (visible on lg) */}
         <div className={navbarStylesDr.desktopMenu}>
           <div className={navbarStylesDr.desktopMenuItems}>
             {navItems.map(({ name, to, Icon }) => (
               <NavLink
                 key={to}
                 to={to}
-                end={to === basePath} // mark dashboard link as exact match
+                end={to === basePath} 
                 className={({ isActive }) =>
                   `${navbarStylesDr.baseLink} ${isActive ? navbarStylesDr.activeLink : navbarStylesDr.inactiveLink}`
                 }
@@ -71,21 +65,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Right side actions */}
         <div className={navbarStylesDr.rightActions}>
-          {/* Logout button (desktop) */}
           <button
             className={navbarStylesDr.logoutButtonDesktop}
             onClick={() => {
-              // TODO: integrate real logout (clear auth + redirect)
               window.location.href = "/doctor-admin/login";
             }}
           >
             <LogOut size={16} />
             <span>Logout</span>
           </button>
-
-          {/* Hamburger Menu (mobile & tablet) */}
           <button
             className={navbarStylesDr.hamburgerButtonMd}
             onClick={() => setOpen((s) => !s)}
@@ -105,7 +94,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile & Tablet Menu */}
       <div className={navbarStylesDr.mobileMenuContainer(open)}>
         <div className={navbarStylesDr.mobileMenuContent}>
           {navItems.map(({ name, to, Icon }) => (
@@ -127,7 +115,6 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {/* Logout button mobile */}
           <button
             className={navbarStylesDr.mobileLogoutButton}
             onClick={() => {
@@ -143,7 +130,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Spacer so content doesn't hide behind navbar */}
       <div className={navbarStylesDr.spacer} />
     </>
   );
