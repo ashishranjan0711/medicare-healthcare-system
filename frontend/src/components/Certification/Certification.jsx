@@ -24,7 +24,6 @@ const Certification = () => {
   return (
     <div className={certificationStyles.container}>
       
-      {/* Background */}
       <div className={certificationStyles.backgroundGrid}>
         <div className={certificationStyles.topLine}></div>
         <div className={certificationStyles.gridContainer}>
@@ -38,7 +37,6 @@ const Certification = () => {
 
       <div className={certificationStyles.contentWrapper}>
         
-        {/* Heading */}
         <div className={certificationStyles.headingContainer}>
           <div className={certificationStyles.headingInner}>
             <div className={certificationStyles.leftLine}></div>
@@ -63,7 +61,6 @@ const Certification = () => {
           </div>
         </div>
 
-        {/* Logos Loop */}
         <div className={certificationStyles.logosContainer}>
           <div className={certificationStyles.logosInner}>
             <div className={certificationStyles.logosFlexContainer}>
@@ -92,7 +89,6 @@ const Certification = () => {
 
       </div>
 
-      {/* Animation Styles */}
       <style>{certificationStyles.animationStyles}</style>
     </div>
   );

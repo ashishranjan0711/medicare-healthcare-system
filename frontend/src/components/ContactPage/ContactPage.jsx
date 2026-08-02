@@ -1,4 +1,4 @@
-// ContactPage.jsx
+
 import React, { useState } from "react";
 import {
   Mail,
@@ -96,7 +96,6 @@ export default function ContactPage() {
     if (name === "department" || name === "service") {
       setErrors((prev) => {
         const copy = { ...prev };
-        // if either department/service has a value, remove the combined error
         if (
           (name === "department" && value) ||
           (name === "service" && value) ||
@@ -130,20 +129,16 @@ export default function ContactPage() {
     setTimeout(() => setSent(false), 4000);
   }
 
-  // show department-specific services on tablet/desktop; generic on phones if no dept selected
   const availableServices = form.department
     ? servicesMapping[form.department] || []
     : genericServices;
 
   return (
     <div className={contactPageStyles.pageContainer}>
-      {/* subtle background accents (reduced on small screens) */}
       <div className={contactPageStyles.bgAccent1}></div>
       <div className={contactPageStyles.bgAccent2}></div>
 
-      {/* Container: single column on phones, two columns on tablets (md) and desktop (lg) */}
       <div className={contactPageStyles.gridContainer}>
-        {/* Left: Contact form */}
         <div className={contactPageStyles.formContainer}>
           <h2 className={contactPageStyles.formTitle}>
             Contact Our Clinic
@@ -154,7 +149,6 @@ export default function ContactPage() {
           </p>
 
           <form onSubmit={handleSubmit} className={contactPageStyles.formSpace}>
-            {/* Name + Email: two columns on small and above */}
             <div className={contactPageStyles.formGrid}>
               <div>
                 <label className={contactPageStyles.label}>
@@ -192,7 +186,6 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Phone + Department: two columns on small and above */}
             <div className={contactPageStyles.formGrid}>
               <div>
                 <label className={contactPageStyles.label}>
@@ -238,7 +231,6 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Service select */}
             <div>
               <label className={contactPageStyles.label}>
                 <Stethoscope size={16} /> Service
@@ -263,7 +255,6 @@ export default function ContactPage() {
               )}
             </div>
 
-            {/* Message */}
             <div>
               <label className={contactPageStyles.label}>
                 <MessageSquare size={16} /> Message
@@ -282,7 +273,6 @@ export default function ContactPage() {
               )}
             </div>
 
-            {/* Actions: button full width on small, inline on md+ */}
             <div className={contactPageStyles.buttonContainer}>
               <button
                 type="submit"
@@ -301,7 +291,6 @@ export default function ContactPage() {
           </form>
         </div>
 
-        {/* Right: Contact info + Map */}
         <div className={contactPageStyles.infoContainer}>
           <div className={contactPageStyles.infoCard}>
             <h3 className={contactPageStyles.infoTitle}>
@@ -337,7 +326,6 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* small animation keyframes */}
       <style>{contactPageStyles.animationKeyframes}</style>
     </div>
   );
