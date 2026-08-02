@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 
-// Import your pages
 import Home from "./pages/Home/Home";
 import Add from "./pages/Add/Add";
 import List from "./pages/List/List";
@@ -17,17 +16,16 @@ import Hero from "./components/Hero/Hero";
 function RequireAuth({ children }) {
   const { isLoaded, isSignedIn } = useUser();
 
-  if (!isLoaded) return null; // prevent flicker
+  if (!isLoaded) return null; 
   if (!isSignedIn)
     return (
       <div className="min-h-screen font-mono flex items-center justify-center bg-linear-to-b from-emerald-50 via-green-50 to-emerald-100 px-4">
         <div className="text-center">
-          {/* Animated text */}
+          
           <p className="text-emerald-800 font-semibold text-lg sm:text-2xl mb-4 animate-fade-in">
             Please sign in to view this page
           </p>
 
-          {/* Button on new line */}
           <div className="flex justify-center">
             <Link
               to="/"
