@@ -1,4 +1,3 @@
-// src/pages/ServiceDetail/ServiceDetail.jsx
 import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
@@ -21,7 +20,6 @@ export default function ServiceDetail() {
 
   const { isSignedIn, userId, getToken } = useAuth();
 
-  // UI state
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -173,17 +171,13 @@ export default function ServiceDetail() {
     };
   }, [id]);
 
-  // place these helpers near the top of the file (above transformServiceShape)
-
   function normalizeToDateString(d) {
-    // Convert anything date-like into YYYY-MM-DD string, or return null if invalid
     const dt = new Date(d);
     if (isNaN(dt)) return null;
     return dt.toISOString().split("T")[0];
   }
 
   function sortServiceDates(datesArr) {
-    // Accepts array of mixed date strings / Date objects, returns array of unique YYYY-MM-DD strings
     if (!Array.isArray(datesArr)) return [];
 
     const uniq = Array.from(
@@ -199,16 +193,15 @@ export default function ServiceDetail() {
 
     const past = parsed
       .filter((p) => dateVal(p.date) < todayVal)
-      .sort((a, b) => dateVal(b.date) - dateVal(a.date)); // nearest past first
+      .sort((a, b) => dateVal(b.date) - dateVal(a.date)); 
 
     const future = parsed
       .filter((p) => dateVal(p.date) >= todayVal)
-      .sort((a, b) => dateVal(a.date) - dateVal(b.date)); // earliest future first (includes today)
+      .sort((a, b) => dateVal(a.date) - dateVal(b.date)); 
 
     return [...past, ...future].map((p) => p.ds);
   }
 
-  // Replace your transformServiceShape with this updated version:
   function transformServiceShape(doc) {
     const out = {};
     out.id =
@@ -252,7 +245,6 @@ export default function ServiceDetail() {
       }
     }
 
-    // Ensure dates normalized and ordered: past-first (nearest → older), then today+future (earliest → latest)
     out.dates = sortServiceDates(dates);
     out.slots = slotsMap;
     out.imageAlt = doc.imageAlt ?? doc.alt ?? out.name;
@@ -278,7 +270,6 @@ export default function ServiceDetail() {
       return;
     }
 
-    // Require Clerk sign-in: show toast and abort if not signed in
     if (!isSignedIn) {
       toast.error("Please sign in to create a booking.");
       return;
@@ -286,15 +277,11 @@ export default function ServiceDetail() {
 
     setSubmitting(true);
     try {
-      // get Clerk token (frontend)
       const token = await getToken().catch(() => null);
-
-      // payload (replace the existing payload in ServiceDetail.jsx)
       const payload = {
         serviceId:
           (service?.raw && (service.raw._id || service.raw.id)) || service?.id,
         serviceName: service?.name || "",
-        // NEW: service image snapshot hints (backend will prefer DB but accepts these)
         serviceImageUrl:
           (service?.raw &&
             (service.raw.imageUrl ||
@@ -334,7 +321,6 @@ export default function ServiceDetail() {
       if (token) {
         headers.Authorization = `Bearer ${token}`;
       } else {
-        // No token despite isSignedIn true — show warning and force re-login
         toast.error(
           "Authentication token not available. Please sign in again.",
         );
@@ -447,7 +433,6 @@ export default function ServiceDetail() {
       </div>
 
       <div className={serviceDetailStyles.mainGrid}>
-        {/* LEFT */}
         <div className={serviceDetailStyles.leftColumn}>
           <div className={serviceDetailStyles.imageContainer}>
             <img
@@ -556,7 +541,6 @@ export default function ServiceDetail() {
             </div>
           </div>
 
-          {/* DATE */}
           <div>
             <h2 className={serviceDetailStyles.dateTitle}>Select Date *</h2>
             <div className={serviceDetailStyles.dateScrollContainer}>
@@ -579,7 +563,6 @@ export default function ServiceDetail() {
             </div>
           </div>
 
-          {/* TIME */}
           {selectedDate && (
             <div className={serviceDetailStyles.timeSection}>
               <h2 className={serviceDetailStyles.timeTitle}>Select Time *</h2>
@@ -637,7 +620,6 @@ export default function ServiceDetail() {
           </div>
         </div>
 
-        {/* RIGHT */}
         <div className={serviceDetailStyles.rightColumn}>
           <h1 className={serviceDetailStyles.serviceName}>{service.name}</h1>
 

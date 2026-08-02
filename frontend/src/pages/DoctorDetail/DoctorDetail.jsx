@@ -1,4 +1,4 @@
-// src/pages/DoctorDetail/DoctorDetail.jsx
+
 import React, { useMemo, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -19,7 +19,6 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Clerk client hooks
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { doctorDetailStyles } from "../../assets/dummyStyles";
 
@@ -33,13 +32,11 @@ function getScheduleDates(schedule) {
       ? Object.keys(schedule)
       : [];
 
-  // Parse keys into Date objects (supporting YYYY-MM-DD and ISO)
   const parsed = keys
     .map((k) => {
       const d = new Date(k);
       if (!isNaN(d)) return { key: k, date: d };
 
-      // fallback: try splitting YYYY-MM-DD
       const parts = k.split("-").map((n) => Number(n));
       if (parts.length >= 3) {
         const [y, m, day] = parts;
@@ -50,7 +47,6 @@ function getScheduleDates(schedule) {
     })
     .filter(Boolean);
 
-  // Normalize compare by date-only (use UTC to avoid timezone time-of-day issues)
   const dateOnlyValue = (d) =>
     Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -61,7 +57,6 @@ function getScheduleDates(schedule) {
     .filter((p) => dateOnlyValue(p.date) < todayVal)
     .sort(
       (a, b) =>
-        // most recent past first (descending)
         dateOnlyValue(b.date) - dateOnlyValue(a.date),
     );
 
@@ -69,23 +64,14 @@ function getScheduleDates(schedule) {
     .filter((p) => dateOnlyValue(p.date) >= todayVal)
     .sort(
       (a, b) =>
-        // earliest first (ascending)
         dateOnlyValue(a.date) - dateOnlyValue(b.date),
     );
-
-  // Return array of Date objects in desired order
   return [...past, ...future].map((p) => p.date);
 }
-
-/**
- * Normalize phone string: remove non-digits and return up to last 10 digits.
- * Returns empty string if no digits.
- */
 function normalizePhoneTo10(phone) {
   if (!phone) return "";
   const digits = ("" + phone).replace(/\D/g, "");
   if (!digits) return "";
-  // prefer last 10 digits (common when country code present)
   return digits.length <= 10 ? digits : digits.slice(-10);
 }
 
@@ -111,7 +97,6 @@ export default function DoctorDetail() {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Clerk hooks
   const { getToken, isLoaded: authLoaded } = useAuth();
   const { isSignedIn, user, isLoaded: userLoaded } = useUser();
 
@@ -119,7 +104,6 @@ export default function DoctorDetail() {
     setIsVisible(true);
   }, []);
 
-  // Prefill the form fields quietly if user is available (no UI markup change)
   useEffect(() => {
     if (!userLoaded) return;
     if (user) {
@@ -146,7 +130,6 @@ export default function DoctorDetail() {
         email: prev.email || email,
       }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoaded, user]);
 
   useEffect(() => {
@@ -186,7 +169,6 @@ export default function DoctorDetail() {
     return doctor.schedule && doctor.schedule[key] ? doctor.schedule[key] : [];
   }, [selectedDate, doctor]);
 
-  // Mobile input handlers: only digits, max 10
   const handleMobileChange = (value) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);
     setFormData((prev) => ({ ...prev, mobile: digits }));
@@ -202,7 +184,6 @@ export default function DoctorDetail() {
   const handleBooking = async () => {
     if (isSubmitting) return;
 
-    // Validate patient details
     if (
       !formData.name ||
       !formData.age ||
@@ -216,7 +197,6 @@ export default function DoctorDetail() {
       return;
     }
 
-    // Mobile must be exactly 10 digits
     const mobileDigits = (formData.mobile || "").replace(/\D/g, "");
     if (mobileDigits.length !== 10) {
       toast.error("Mobile number must be exactly 10 digits.", {
@@ -252,9 +232,8 @@ export default function DoctorDetail() {
 
     setIsSubmitting(true);
 
-    const dateISO = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    const dateISO = selectedDate.toISOString().split("T")[0]; 
 
-    // prefer fields from doctor object (this is only sent as a hint; backend will use DB)
     const doctorNameValue = doctor?.name || "";
     const specialityValue =
       doctor?.specialization ||
@@ -262,7 +241,6 @@ export default function DoctorDetail() {
       doctor?.specialityName ||
       "";
 
-    // optional owner from doctor object (backend will prefer doctor.owner)
     const ownerValue = doctor?.owner || undefined;
 
     const payload = {
@@ -270,7 +248,6 @@ export default function DoctorDetail() {
       doctorName: doctorNameValue,
       speciality: specialityValue,
       owner: ownerValue,
-      // NEW: send image hints (optional — backend prefers DB but accepts these)
       doctorImageUrl: doctor?.imageUrl || doctor?.image || "",
       doctorImagePublicId:
         doctor?.imagePublicId || doctor?.image?.publicId || "",
@@ -310,20 +287,16 @@ export default function DoctorDetail() {
         return;
       }
 
-      // If checkoutUrl is returned -> redirect to Stripe Checkout
       if (body.checkoutUrl) {
-        // redirect user to Stripe Checkout
         window.location.href = body.checkoutUrl;
         return;
       }
 
-      // Booking created (Cash or free)
       toast.success("Booking successful", {
         position: "top-center",
         autoClose: 1500,
       });
 
-      // navigate to appointments list (you can change this path)
       setTimeout(() => {
         window.location.href = "/appointments?payment_status=Pending";
       }, 700);
@@ -407,7 +380,6 @@ export default function DoctorDetail() {
             : doctorDetailStyles.hiddenState
         }`}
       >
-        {/* profile card */}
         <div className={doctorDetailStyles.profileCard}>
           <div className={doctorDetailStyles.profileGrid}>
             <div className={doctorDetailStyles.leftColumn}>
@@ -455,7 +427,6 @@ export default function DoctorDetail() {
               </div>
             </div>
 
-            {/* RIGHT */}
             <div className={doctorDetailStyles.rightColumn}>
               <div className="space-y-3">
                 <h1 className={doctorDetailStyles.doctorName}>{doctor.name}</h1>
@@ -541,7 +512,6 @@ export default function DoctorDetail() {
             </div>
 
             <div className={doctorDetailStyles.appointmentGrid}>
-              {/* LEFT COLUMN */}
               <div className={doctorDetailStyles.dateSection}>
                 <h3 className={doctorDetailStyles.dateTitle}>
                   <CalendarCheck className={doctorDetailStyles.dateTitleIcon} />{" "}
@@ -584,7 +554,6 @@ export default function DoctorDetail() {
                   </div>
                 </div>
 
-                {/* PATIENT FORM */}
                 <div className={doctorDetailStyles.patientForm}>
                   <h3 className={doctorDetailStyles.patientFormTitle}>
                     Patient Details
@@ -649,7 +618,6 @@ export default function DoctorDetail() {
                 </div>
               </div>
 
-              {/* RIGHT COLUMN */}
               <div className={doctorDetailStyles.timeSlotsSection}>
                 <h3 className={doctorDetailStyles.timeSlotsTitle}>
                   <Clock className={doctorDetailStyles.timeSlotsIcon} />{" "}
@@ -681,7 +649,6 @@ export default function DoctorDetail() {
                   ))}
                 </div>
 
-                {/* SUMMARY */}
                 <div className={doctorDetailStyles.summaryContainer}>
                   <div className={doctorDetailStyles.summaryItem}>
                     <div className={doctorDetailStyles.summaryRow}>
@@ -737,7 +704,6 @@ export default function DoctorDetail() {
                     </div>
                   </div>
 
-                  {/* PAYMENT METHOD SELECTOR */}
                   <div className={doctorDetailStyles.paymentContainer}>
                     <label className={doctorDetailStyles.paymentLabel}>
                       Payment:

@@ -1,8 +1,7 @@
-// src/App.jsx
+
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 
-// Pages
 import Home from "./pages/Home/Home";
 import Doctors from "./pages/Doctors/Doctors";
 import Contact from "./pages/Contact/Contact";
@@ -12,17 +11,14 @@ import ServiceDetailPage from "./pages/ServiceDetailPage/ServiceDetailPage";
 import Appointments from "./pages/Appointments/Appointments";
 import Login from "./pages/Login/Login";
 
-// Doctor Admin
 import DHome from "./pages/DHome/DHome";
 import List from "./pages/List/List";
 import EditProfile from "./pages/EditProfile/EditProfile";
 
-// Lucide icon
 import { CircleChevronUp } from "lucide-react";
 import VerifyPaymentPage from "../VerifyPaymetPage";
 import VerifyServicePaymentPage from "../VerifyServicePaymentPage";
 
-/* ================= Scroll To Top ================= */
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -35,7 +31,6 @@ const ScrollToTop = () => {
   return null;
 };
 
-/* ================= Floating Scroll Button ================= */
 const ScrollButton = () => {
   const [visible, setVisible] = useState(false);
 
@@ -62,9 +57,7 @@ const ScrollButton = () => {
   );
 };
 
-/* ================= Main App ================= */
 const App = () => {
-  // Lock horizontal overflow globally
   useEffect(() => {
     document.body.style.overflowX = "hidden";
     document.documentElement.style.overflowX = "hidden";
@@ -80,7 +73,6 @@ const App = () => {
 
       <div className="overflow-x-hidden bg-white text-gray-900">
         <Routes>
-          {/* Public */}
           <Route path="/" element={<Home />} />
           <Route path="/doctors" element={<Doctors />} />
           <Route path="/doctors/:id" element={<DoctorDetail />} />
@@ -89,8 +81,6 @@ const App = () => {
           <Route path="/services/:id" element={<ServiceDetailPage />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/doctor-admin/login" element={<Login />} />
-
-          {/* ✅ STRIPE PAYMENT ROUTES */}
           <Route path="/appointment/success" element={<VerifyPaymentPage />} />
           <Route path="/appointment/cancel" element={<VerifyPaymentPage />} />
 
@@ -103,7 +93,6 @@ const App = () => {
             element={<VerifyServicePaymentPage />}
           />
 
-          {/* Doctor Admin */}
           <Route path="/doctor-admin/:id" element={<DHome />} />
           <Route path="/doctor-admin/:id/appointments" element={<List />} />
           <Route
