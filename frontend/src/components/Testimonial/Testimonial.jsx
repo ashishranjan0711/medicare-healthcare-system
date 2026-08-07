@@ -40,10 +40,10 @@ const Testimonial = () => {
     },
     {
       id: 4,
-      name: "Emily Williams",
+      name: "Rishav Jha",
       role: "Patient",
       rating: 5,
-      text: "Booking appointments online 24/7 is a game-changer. The confirmation system gives me peace of mind.",
+      text: "I book appointments at midnight if I want to — and get instant confirmation. That kind of ease changes everything.",
       image:
         "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80",
       type: "patient",
