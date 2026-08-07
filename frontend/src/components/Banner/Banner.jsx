@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Calendar,
   Clock,
@@ -8,13 +8,22 @@ import {
   Users,
   Ribbon,
   ShieldUser,
+  X,
+  MessageCircle,
 } from "lucide-react";
 import banner from "../../assets/BannerImg.png";
 import { useNavigate } from "react-router-dom";
 import { bannerStyles } from "../../assets/dummyStyles";
 
+const EMERGENCY_PHONE = "+917004829398";
+const EMERGENCY_PHONE_DISPLAY = "+91 70048 29398";
+const CONTACT_URL =
+  "https://medicare-healthcare-system-frontened.onrender.com/contact";
+
 const Banner = () => {
   const navigate = useNavigate();
+  const [showEmergencyOptions, setShowEmergencyOptions] = useState(false);
+
   return (
     <div className={bannerStyles.bannerContainer}>
       <div className={bannerStyles.mainContainer}>
@@ -103,8 +112,9 @@ const Banner = () => {
                 </button>
 
                 <button
-                  onClick={() => (window.location.href = "https://medicare-healthcare-system-frontened.onrender.com/contact")}
-                  aria-label="Emergency Call"
+                  onClick={() => setShowEmergencyOptions(true)}
+                  aria-label="Emergency Call options"
+                  aria-haspopup="dialog"
                   className={bannerStyles.emergencyButton}
                 >
                   <div className={bannerStyles.emergencyButtonContent}>
@@ -129,7 +139,115 @@ const Banner = () => {
           </div>
         </div>
       </div>{" "}
+
+      {showEmergencyOptions && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="emergency-dialog-title"
+          onClick={() => setShowEmergencyOptions(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "16px",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#ffffff",
+              borderRadius: "16px",
+              padding: "24px",
+              width: "100%",
+              maxWidth: "360px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "16px",
+              }}
+            >
+              <h3
+                id="emergency-dialog-title"
+                style={{ margin: 0, fontSize: "18px", fontWeight: 600 }}
+              >
+                Emergency assistance
+              </h3>
+              <button
+                onClick={() => setShowEmergencyOptions(false)}
+                aria-label="Close"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "4px",
+                  display: "flex",
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p
+              style={{
+                margin: "0 0 20px",
+                fontSize: "14px",
+                color: "#555",
+              }}
+            >
+              Choose how you'd like to reach us right now.
+            </p>
+
+            
+             <a
+  href={`tel:${EMERGENCY_PHONE}`}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "14px 16px",
+    borderRadius: "12px",
+    background: "#DC2626",
+    color: "#fff",
+    textDecoration: "none",
+    fontWeight: 600,
+    marginBottom: "12px",
+  }}
+>
+  <Phone size={20} />
+  <span>Call hospital now &mdash; {EMERGENCY_PHONE_DISPLAY}</span>
+</a>
+
+<a
+  href={CONTACT_URL}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "14px 16px",
+    borderRadius: "12px",
+    border: "1px solid #ddd",
+    color: "#333",
+    textDecoration: "none",
+    fontWeight: 500,
+  }}
+>
+  <MessageCircle size={20} />
+  <span>Visit contact page instead</span>
+</a>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 export default Banner;
