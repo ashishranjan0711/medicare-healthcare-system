@@ -30,7 +30,7 @@ const Testimonial = () => {
     },
     {
       id: 3,
-      name: "Dr. Raushan Yadav",
+      name: "Dr. Raushani Yadav",
       role: "Pediatrician",
       rating: 4,
       text: "This platform has streamlined our clinic operations — patient management is far more organized than before.",
