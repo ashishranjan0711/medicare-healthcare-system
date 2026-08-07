@@ -50,7 +50,7 @@ const Certification = () => {
           </div>
 
           <p className={certificationStyles.subtitle}>
-            Government recognized and internationally accredited healthcare standards
+            Government-recognized and internationally accredited healthcare standards.
           </p>
 
           <div className={certificationStyles.badgeContainer}>
