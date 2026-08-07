@@ -144,8 +144,7 @@ export default function ContactPage() {
             Contact Our Clinic
           </h2>
           <p className={contactPageStyles.formSubtitle}>
-            Fill the form — we'll open WhatsApp so you can connect with us
-            instantly.
+            Fill the form and we'll open WhatsApp so you can connect with us instantly.
           </p>
 
           <form onSubmit={handleSubmit} className={contactPageStyles.formSpace}>
@@ -303,7 +302,7 @@ export default function ContactPage() {
               <Phone size={16} /> 7004829398
             </p>
             <p className={contactPageStyles.infoItem}>
-              <Mail size={16} /> info@yourclinic_sanjeevni.com
+              <Mail size={16} /> info@yourclinic_medicare.com
             </p>
           </div>
 
