@@ -94,7 +94,7 @@ const Banner = () => {
                   className={`${bannerStyles.featureItem} ${bannerStyles.featureBorderPurple}`}
                 >
                   <Users className={bannerStyles.featureIcon} />
-                  <span className={bannerStyles.featureText}>500+ Doctors</span>
+                  <span className={bannerStyles.featureText}>50+ Doctors</span>
                 </div>
               </div>
 
