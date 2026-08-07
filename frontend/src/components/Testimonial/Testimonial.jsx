@@ -60,7 +60,7 @@ const Testimonial = () => {
     },
     {
       id: 6,
-      name: "Pawan Singh",
+      name: "Amrita Singh",
       role: "Patient",
       rating: 5,
       text: "Wait times have dropped significantly since I started using this platform — smooth, intuitive, and genuinely convenient.",
