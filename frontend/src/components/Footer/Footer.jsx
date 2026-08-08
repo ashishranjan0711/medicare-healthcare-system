@@ -226,7 +226,7 @@ const Footer = () => {
 
         <div className={footerStyles.bottomSection}>
           <div className={footerStyles.copyright}>
-            <span>© {currentYear} MediCare Healthcare By Ashish Ranjan</span>
+            <span>© {currentYear} MediCare Healthcare | Ashish Ranjan</span>
           </div>
 
           <div className={footerStyles.designerText}>
