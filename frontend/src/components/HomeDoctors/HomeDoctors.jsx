@@ -197,7 +197,6 @@ const HomeDoctors = ({ apiBase, previewCount = 8 }) => {
                   </div>
                 )}
 
-                {/* BODY */}
                 <div className={homeDoctorsStyles.cardBody}>
                   <h3
                     id={`doctor-${doctor.id}-name`}
